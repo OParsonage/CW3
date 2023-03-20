@@ -52,8 +52,9 @@ grid7 = [
         [2, 0, 6, 0, 3, 0, 7, 0, 0]
 	    ]
 
-grids = [(grid1, 2, 2), (grid2, 2, 2), (grid3, 2, 2), (grid4, 2, 2), (grid5, 2, 2), (grid6, 2, 3), (grid7, 3, 3)]
-#grids = [(grid1, 2, 2)]
+#grids = [(grid1, 2, 2), (grid2, 2, 2), (grid3, 2, 2), (grid4, 2, 2), (grid5, 2, 2), (grid6, 2, 3), (grid7, 3, 3)]
+grids = [(grid7, 3, 3)]
+
 '''
 ===================================
 DO NOT CHANGE CODE ABOVE THIS LINE
@@ -73,7 +74,6 @@ def reader(data_file): # function to read the data from the csv file
         return list(all_data)   # return the data as a list
 
 def get_squares(grid, n_rows, n_cols):
-
 	squares = []
 	for i in range(n_cols):
 		rows = (i*n_rows, (i+1)*n_rows)
@@ -186,7 +186,8 @@ def main():
 		solution = solve(grid, n_rows, n_cols)
 		elapsed_time = time.time() - start_time
 		print("Solved in: %f seconds" % elapsed_time)
-		print(solution)
+		for line in solution:
+			print(line)
 		if check_solution(solution, n_rows, n_cols):
 			print("grid %d correct" % (i+1))
 			points = points + 10
