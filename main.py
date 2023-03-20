@@ -168,6 +168,9 @@ def valid(grid, row_index, column_index, number, n_rows, n_cols):
 def priority_length(term):
 	return(term[2])
 
+def to_tuple(lst):
+    return tuple(to_tuple(i) if isinstance(i, list) else i for i in lst)
+
 def create_priority(grid, n_rows, n_cols):
 	'''Creates an array of the number of valid values & a separate array with empty values replaced with an array of all valid values
     Inputs: 
@@ -178,10 +181,9 @@ def create_priority(grid, n_rows, n_cols):
         priority_array: array of coordinates in the format [row_no, col_no, possible_values_count]
 	    valid_array: array of original grid with all 0-values replaced with viable values'''
 	priority_array = []
-	valid_array = []
-	for line in grid:
-	    valid_array.append(line)
+	valid_array = grid[:]
 	n = n_rows*n_cols
+	grid = to_tuple(grid) # Tuple is created here
 	for row in range(0, n): # i is the row
 		for column in range(0, n): # j is the column
 			if grid[row][column] == 0: # if the cell is empty
