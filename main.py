@@ -157,7 +157,7 @@ def valid(grid, row_index, column_index, number, n_rows, n_cols):
 	return True # if the number is not in the row, column or box, it is valid
 
 def priority_length(term):
-	return(term[2])
+	return(len(term[2]))
 
 def to_tuple(lst):
     return tuple(to_tuple(i) if isinstance(i, list) else i for i in lst)
