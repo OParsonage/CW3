@@ -116,10 +116,12 @@ def check_solution(grid, n_rows, n_cols):
 def recursive_solve(grid, n_rows, n_cols):
 	'''A recursive function to both enter and test possible values in the grid
 	Inputs:
-		grid: initial grid to solve
-		n_rows: number of boxes horizontally
-		n_cols: number of boxes vertically'''
-	priority_array, valid_array = create_priority(grid, n_rows, n_cols)
+	grid: initial grid to solve
+	n_rows: number of boxes horizontally
+	n_cols: number of boxes vertically'''
+	output_grid = grid
+	grid = to_tuple(grid)
+	priority_array, valid_array = create_priority(output_grid, n_rows, n_cols)
 	print("Priority Array:")
 	for row in priority_array:
 		print(row)
@@ -132,15 +134,15 @@ def recursive_solve(grid, n_rows, n_cols):
 	n = n_rows*n_cols
 	for row in range(0, n): # i is the row
 		for column in range(0, n): # j is the column
-			if grid[row][column] == 0: # if the cell is empty
+			if output_grid[row][column] == 0: # if the cell is empty
 				for k in range(1, n+1): # k is the number we are trying to put in the cell
-					if valid(grid, row, column, k, n_rows, n_cols): # test that the value entered could be part of a valid solution
-						grid[row][column] = k # we put k in the cell
-						recursive_solve(grid, n_rows, n_cols) # we call the function recursively
-						if check_solution(grid, n_rows, n_cols): # if the grid is correct, we return it
-							return(grid)
-				grid[row][column] = 0 # if we have tried all the numbers and none of them work, we return the grid to its original state
-				return(grid)
+					if valid(output_grid, row, column, k, n_rows, n_cols): # test that the value entered could be part of a valid solution
+						output_grid[row][column] = k # we put k in the cell
+						recursive_solve(output_grid, n_rows, n_cols) # we call the function recursively
+						if check_solution(output_grid, n_rows, n_cols): # if the grid is correct, we return it
+							return(output_grid)
+				output_grid[row][column] = 0 # if we have tried all the numbers and none of them work, we return the grid to its original state
+				return(output_grid)
 # we return the grid if it is already solved
 
 # we check if the number is valid in the row, column and box
@@ -181,7 +183,9 @@ def create_priority(grid, n_rows, n_cols):
         priority_array: array of coordinates in the format [row_no, col_no, possible_values_count]
 	    valid_array: array of original grid with all 0-values replaced with viable values'''
 	priority_array = []
-	valid_array = grid[:]
+	valid_array = []
+	for line in grid:
+		valid_array.append(list(line))
 	n = n_rows*n_cols
 	grid = to_tuple(grid) # Tuple is created here
 	for row in range(0, n): # i is the row
