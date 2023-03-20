@@ -214,9 +214,9 @@ def solve(grid, n_rows, n_cols):
         changes = []
         for index, row in enumerate(original_grid):
             changes.append([(i, updated) for i, (zero, updated) in enumerate(zip(row, solved_grid[index])) if zero != updated])
-    for row_number, row in enumerate(changes):
-        for element in row:
-            print(f"Put {element[0]} in location ({row_number}, {element[1]})")
+        for row_number, row in enumerate(changes):
+            for element in row:
+                print(f"Put {element[0]} in location ({row_number}, {element[1]})")
     return solved_grid
 
 
