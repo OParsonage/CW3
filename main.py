@@ -40,7 +40,19 @@ grid6 = [
 		[0, 0, 1, 0, 0, 0],
 		[0, 5, 0, 0, 6, 4]]
 
-grids = [(grid1, 2, 2), (grid2, 2, 2), (grid3, 2, 2), (grid4, 2, 2), (grid5, 2, 2), (grid6, 2, 3)]
+grid7 = [
+	    [1, 6, 8, 0, 0, 0, 9, 0, 2],
+        [0, 0, 0, 3, 0, 1, 0, 0, 0],
+        [0, 3, 0, 6, 2, 0, 0, 0, 0],
+        [0, 0, 9, 0, 0, 0, 1, 0, 6],
+        [0, 0, 1, 0, 0, 0, 3, 7, 0],
+        [0, 4, 3, 5, 0, 0, 0, 0, 9],
+        [0, 0, 0, 8, 0, 2, 6, 0, 0],
+        [0, 0, 0, 9, 0, 5, 0, 2, 3],
+        [2, 0, 6, 0, 3, 0, 7, 0, 0]
+	    ]
+
+grids = [(grid1, 2, 2), (grid2, 2, 2), (grid3, 2, 2), (grid4, 2, 2), (grid5, 2, 2), (grid6, 2, 3), (grid7, 3, 3)]
 #grids = [(grid1, 2, 2)]
 '''
 ===================================
@@ -60,8 +72,6 @@ def reader(data_file): # function to read the data from the csv file
         all_data = csv.reader(data) # read the data
         return list(all_data)   # return the data as a list
 
-
-
 def get_squares(grid, n_rows, n_cols):
 
 	squares = []
@@ -74,14 +84,11 @@ def get_squares(grid, n_rows, n_cols):
 				line = grid[k][cols[0]:cols[1]]
 				square +=line
 			squares.append(square)
-
-
 	return(squares)
 
 def check_solution(grid, n_rows, n_cols):
 	'''
 	This function is used to check whether a sudoku board has been correctly solved
-
 	args: grid - representation of a suduko board as a nested list.
 	returns: True (correct solution) or False (incorrect solution)
 	'''
