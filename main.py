@@ -1,4 +1,3 @@
-import copy
 import time
 
 #Grids 1-5 are 2x2
@@ -60,7 +59,18 @@ grids = [(grid7, 3, 3)]
 DO NOT CHANGE CODE ABOVE THIS LINE
 ===================================
 '''
+#TODO Entrypoint function
+
 import csv
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--explain", help="Provide set of instructions for solving grid", default=False, action=argparse.BooleanOptionalAction)
+parser.add_argument("--file", nargs=2, metavar=("INPUT", "OUTPUT"), help="Input file for grid to solve and output file for solved grid. If 'explain' is set then include explanations")
+parser.add_argument("--hint", help="Integer value for number of values to fill", default=None)
+parser.add_argument("--profile", help="Measure performance and produce plots using 'timeit'", default=False, action=argparse.BooleanOptionalAction)
+
+args = parser.parse_args()
 
 def check_section(section, n):
 
