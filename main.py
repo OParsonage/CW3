@@ -121,15 +121,16 @@ def recursive_solve(grid, n_rows, n_cols, priority_array):
 	n_cols: number of boxes vertically'''
 	#N is the maximum integer considered in this board
 	n = n_rows*n_cols
-	row = priority_array[0][0]
-	column = priority_array[0][1]
-	for k in priority_array[0][2]: # k is the number we are trying to put in the cell
-		if valid(grid, row, column, k, n_rows, n_cols): # test that the value entered could be part of a valid solution
-			grid[row][column] = k # we put k in the cell
-			recursive_solve(grid, n_rows, n_cols, priority_array[1:]) # we call the function recursively
-			if check_solution(grid, n_rows, n_cols): # if the grid is correct, we return it
-				return(grid)
-	grid[row][column] = 0 # if we have tried all the numbers and none of them work, we return the grid to its original state
+	if priority_array:
+		row = priority_array[0][0]
+		column = priority_array[0][1]
+		for k in priority_array[0][2]: # k is the number we are trying to put in the cell
+			if valid(grid, row, column, k, n_rows, n_cols): # test that the value entered could be part of a valid solution
+				grid[row][column] = k # we put k in the cell
+				recursive_solve(grid, n_rows, n_cols, priority_array[1:]) # we call the function recursively
+				if check_solution(grid, n_rows, n_cols): # if the grid is correct, we return it
+					return(grid)
+		grid[row][column] = 0 # if we have tried all the numbers and none of them work, we return the grid to its original state
 	return(grid)
 # we return the grid if it is already solved
 
@@ -194,9 +195,6 @@ def solve(grid, n_rows, n_cols):
 	Comment out one of the lines below to either use the random or recursive solver
 	'''
 	priority_array, valid_array = create_priority(grid, n_rows, n_cols)
-	print("Priority array: ")
-	for line in priority_array:
-		print(line)
 	#return random_solve(grid, n_rows, n_cols)
 	return recursive_solve(grid, n_rows, n_cols, priority_array)
 
