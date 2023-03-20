@@ -176,7 +176,6 @@ def create_priority(grid, n_rows, n_cols):
 	for line in grid:
 		valid_array.append(list(line))
 	n = n_rows*n_cols
-	grid = to_tuple(grid) # Tuple is created here
 	for row in range(0, n): # i is the row
 		for column in range(0, n): # j is the column
 			if grid[row][column] == 0: # if the cell is empty
