@@ -124,9 +124,9 @@ def recursive_solve(grid, n_rows, n_cols, priority_array):
 	if priority_array:
 		row = priority_array[0][0]
 		column = priority_array[0][1]
-		for k in priority_array[0][2]: # k is the number we are trying to put in the cell
-			if valid(grid, row, column, k, n_rows, n_cols): # test that the value entered could be part of a valid solution
-				grid[row][column] = k # we put k in the cell
+		for value in priority_array[0][2]: # k is the number we are trying to put in the cell
+			if valid(grid, row, column, value, n_rows, n_cols): # test that the value entered could be part of a valid solution
+				grid[row][column] = value # we put k in the cell
 				recursive_solve(grid, n_rows, n_cols, priority_array[1:]) # we call the function recursively
 				if check_solution(grid, n_rows, n_cols): # if the grid is correct, we return it
 					return(grid)
