@@ -113,15 +113,12 @@ def check_solution(grid, n_rows, n_cols):
 	return True
 
 # function to solve the sudoku board
-def recursive_solve(grid, n_rows, n_cols):
+def recursive_solve(output_grid, grid, n_rows, n_cols):
 	'''A recursive function to both enter and test possible values in the grid
 	Inputs:
 	grid: initial grid to solve
 	n_rows: number of boxes horizontally
 	n_cols: number of boxes vertically'''
-	output_grid = grid
-	grid = to_tuple(grid)
-	priority_array, valid_array = create_priority(output_grid, n_rows, n_cols)
 	#N is the maximum integer considered in this board
 	n = n_rows*n_cols
 	for row in range(0, n): # i is the row
@@ -130,7 +127,7 @@ def recursive_solve(grid, n_rows, n_cols):
 				for k in range(1, n+1): # k is the number we are trying to put in the cell
 					if valid(output_grid, row, column, k, n_rows, n_cols): # test that the value entered could be part of a valid solution
 						output_grid[row][column] = k # we put k in the cell
-						recursive_solve(output_grid, n_rows, n_cols) # we call the function recursively
+						recursive_solve(output_grid, grid, n_rows, n_cols) # we call the function recursively
 						if check_solution(output_grid, n_rows, n_cols): # if the grid is correct, we return it
 							return(output_grid)
 				output_grid[row][column] = 0 # if we have tried all the numbers and none of them work, we return the grid to its original state
@@ -197,9 +194,11 @@ def solve(grid, n_rows, n_cols):
 	Solve function for Sudoku coursework.
 	Comment out one of the lines below to either use the random or recursive solver
 	'''
-	
+	output_grid = grid
+	grid = to_tuple(grid)
+	priority_array, valid_array = create_priority(output_grid, n_rows, n_cols)
 	#return random_solve(grid, n_rows, n_cols)
-	return recursive_solve(grid, n_rows, n_cols)
+	return recursive_solve(output_grid, grid, n_rows, n_cols)
 
 
 '''
