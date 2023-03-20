@@ -63,6 +63,7 @@ DO NOT CHANGE CODE ABOVE THIS LINE
 
 import csv
 import argparse
+import copy
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--explain", help="Provide set of instructions for solving grid", default=False, action=argparse.BooleanOptionalAction)
@@ -200,13 +201,23 @@ def create_priority(grid, n_rows, n_cols):
 	return priority_array, valid_array
 
 def solve(grid, n_rows, n_cols):
-	'''
-	Solve function for Sudoku coursework.
-	Comment out one of the lines below to either use the random or recursive solver
-	'''
-	priority_array, valid_array = create_priority(grid, n_rows, n_cols)
-	#return random_solve(grid, n_rows, n_cols)
-	return recursive_solve(grid, n_rows, n_cols, priority_array)
+    '''
+    Solve function for Sudoku coursework.
+    Comment out one of the lines below to either use the random or recursive solver
+    '''
+    original_grid = copy.deepcopy(grid)
+    print(original_grid)
+    priority_array, valid_array = create_priority(grid, n_rows, n_cols)
+    solved_grid = recursive_solve(grid, n_rows, n_cols, priority_array)
+    print(original_grid)
+    if args.explain:
+        changes = []
+        for index, row in enumerate(original_grid):
+            changes.append([(i, updated) for i, (zero, updated) in enumerate(zip(row, solved_grid[index])) if zero != updated])
+    for row_number, row in enumerate(changes):
+        for element in row:
+            print(f"Put {element[0]} in location ({row_number}, {element[1]})")
+    return solved_grid
 
 
 '''
