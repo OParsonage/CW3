@@ -122,14 +122,6 @@ def recursive_solve(grid, n_rows, n_cols):
 	output_grid = grid
 	grid = to_tuple(grid)
 	priority_array, valid_array = create_priority(output_grid, n_rows, n_cols)
-	print("Priority Array:")
-	for row in priority_array:
-		print(row)
-	print()
-	print("Valid Array:")
-	for row in valid_array:
-		print(row)
-	print()
 	#N is the maximum integer considered in this board
 	n = n_rows*n_cols
 	for row in range(0, n): # i is the row
