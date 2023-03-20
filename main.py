@@ -113,25 +113,24 @@ def check_solution(grid, n_rows, n_cols):
 	return True
 
 # function to solve the sudoku board
-def recursive_solve(grid, n_rows, n_cols):
+def recursive_solve(grid, n_rows, n_cols, priority_array):
 	'''A recursive function to both enter and test possible values in the grid
 	Inputs:
-		grid: initial grid to solve
-		n_rows: number of boxes horizontally
-		n_cols: number of boxes vertically'''
+	grid: initial grid to solve
+	n_rows: number of boxes horizontally
+	n_cols: number of boxes vertically'''
 	#N is the maximum integer considered in this board
-	n = n_rows*n_cols
-	for row in range(0, n): # i is the row
-		for column in range(0, n): # j is the column
-			if grid[row][column] == 0: # if the cell is empty
-				for k in range(1, n+1): # k is the number we are trying to put in the cell
-					if valid(grid, row, column, k, n_rows, n_cols): # test that the value entered could be part of a valid solution
-						grid[row][column] = k # we put k in the cell
-						recursive_solve(grid, n_rows, n_cols) # we call the function recursively
-						if check_solution(grid, n_rows, n_cols): # if the grid is correct, we return it
-							return(grid)
-				grid[row][column] = 0 # if we have tried all the numbers and none of them work, we return the grid to its original state
-				return(grid)
+	if priority_array:
+		row = priority_array[0][0]
+		column = priority_array[0][1]
+		for value in priority_array[0][2]: # k is the number we are trying to put in the cell
+			if valid(grid, row, column, value, n_rows, n_cols): # test that the value entered could be part of a valid solution
+				grid[row][column] = value # we put k in the cell
+				recursive_solve(grid, n_rows, n_cols, priority_array[1:]) # we call the function recursively
+				if check_solution(grid, n_rows, n_cols): # if the grid is correct, we return it
+					return(grid)
+		grid[row][column] = 0 # if we have tried all the numbers and none of them work, we return the grid to its original state
+	return(grid)
 # we return the grid if it is already solved
 
 # we check if the number is valid in the row, column and box
@@ -142,7 +141,7 @@ def valid(grid, row_index, column_index, number, n_rows, n_cols):
 		row_index, column_index: location of value in grid
 		number: value of number to be tested
 		n_rows: number of boxes horizontally
-		n_columns: number of boxes vertically
+		n_cols: number of boxes vertically
 	Outputs: 
 		Boolean True/False'''
 	if number in grid[row_index]: # if the number is already in the row, it is not valid
@@ -156,16 +155,46 @@ def valid(grid, row_index, column_index, number, n_rows, n_cols):
 		return False
 	return True # if the number is not in the row, column or box, it is valid
 
+def priority_length(term):
+	return(len(term[2]))
+
+def to_tuple(lst):
+    return tuple(to_tuple(i) if isinstance(i, list) else i for i in lst)
+
+def create_priority(grid, n_rows, n_cols):
+	'''Creates an array of the number of valid values & a separate array with empty values replaced with an array of all valid values
+    Inputs: 
+        grid: current grid to be solved
+	    n_rows: number of boxes horizontally
+		n_cols: number of boxes vertically
+	Outputs:
+        priority_array: array of coordinates in the format [row_no, col_no, possible_values_count]
+	    valid_array: array of original grid with all 0-values replaced with viable values'''
+	priority_array = []
+	valid_array = []
+	for line in grid:
+		valid_array.append(list(line))
+	n = n_rows*n_cols
+	for row in range(0, n): # i is the row
+		for column in range(0, n): # j is the column
+			if grid[row][column] == 0: # if the cell is empty
+				valid_array[row][column] = []
+				priority_array.append([row, column, []])
+				for value in range(1, n+1): # k is the number we are trying to put in the cell
+					if valid(grid, row, column, value, n_rows, n_cols): # test that the value entered could be part of a valid solution
+						valid_array[row][column].append(value)
+						priority_array[-1][2].append(value)
+	priority_array.sort(key=priority_length)
+	return priority_array, valid_array
 
 def solve(grid, n_rows, n_cols):
-
 	'''
 	Solve function for Sudoku coursework.
 	Comment out one of the lines below to either use the random or recursive solver
 	'''
-	
+	priority_array, valid_array = create_priority(grid, n_rows, n_cols)
 	#return random_solve(grid, n_rows, n_cols)
-	return recursive_solve(grid, n_rows, n_cols)
+	return recursive_solve(grid, n_rows, n_cols, priority_array)
 
 
 '''
