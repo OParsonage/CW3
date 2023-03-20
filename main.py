@@ -120,7 +120,6 @@ def recursive_solve(grid, n_rows, n_cols, priority_array):
 	n_rows: number of boxes horizontally
 	n_cols: number of boxes vertically'''
 	#N is the maximum integer considered in this board
-	n = n_rows*n_cols
 	if priority_array:
 		row = priority_array[0][0]
 		column = priority_array[0][1]
