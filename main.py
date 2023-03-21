@@ -51,8 +51,8 @@ grid7 = [
         [2, 0, 6, 0, 3, 0, 7, 0, 0]
 	    ]
 
-#grids = [(grid1, 2, 2), (grid2, 2, 2), (grid3, 2, 2), (grid4, 2, 2), (grid5, 2, 2), (grid6, 2, 3), (grid7, 3, 3)]
-grids = [(grid7, 3, 3)]
+grids = [(grid1, 2, 2), (grid2, 2, 2), (grid3, 2, 2), (grid4, 2, 2), (grid5, 2, 2), (grid6, 2, 3), (grid7, 3, 3)]
+# grids = [(grid7, 3, 3)]
 
 '''
 ===================================
@@ -64,6 +64,7 @@ DO NOT CHANGE CODE ABOVE THIS LINE
 import csv
 import argparse
 import copy
+import timeit
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--explain", help="Provide set of instructions for solving grid", default=False, action=argparse.BooleanOptionalAction)
@@ -200,16 +201,30 @@ def create_priority(grid, n_rows, n_cols):
 	priority_array.sort(key=priority_length)
 	return priority_array, valid_array
 
+SETUP="""
+def profile_solve(grid, n_rows, n_cols):
+    priority_array, valid_array = create_priority(grid, n_rows, n_cols)
+    solved_grid = recursive_solve(grid, n_rows, n_cols, priority_array)
+    return solved_grid
+"""
+
+STMT="""
+profile_solve(grid, n_rows, n_cols)
+"""
+
 def solve(grid, n_rows, n_cols):
     '''
     Solve function for Sudoku coursework.
     Comment out one of the lines below to either use the random or recursive solver
     '''
     original_grid = copy.deepcopy(grid)
-    print(original_grid)
+    if args.profile:
+        difficulty = sum(row.count(0) for row in grid)
+        print(difficulty)
+        results = timeit.repeat(stmt=STMT, setup=SETUP, repeat=10, number=5, globals={"grid": grid, "n_rows": n_cols, "n_cols": n_rows, "create_priority": create_priority, "recursive_solve": recursive_solve})
+        print(f"Results for difficulty: {difficulty}, grid size: {n_cols}x{n_rows} are: {results}")
     priority_array, valid_array = create_priority(grid, n_rows, n_cols)
     solved_grid = recursive_solve(grid, n_rows, n_cols, priority_array)
-    print(original_grid)
     if args.explain:
         changes = []
         for index, row in enumerate(original_grid):
