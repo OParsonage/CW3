@@ -237,21 +237,24 @@ def create_priority(grid, n_rows, n_cols):
     return priority_array, valid_array
 
 
-def solve(grid, n_rows, n_cols):
-    SETUP = """
-    def profile_solve(grid, n_rows, n_cols):
+SETUP = """
+def profile_solve(grid, n_rows, n_cols):
         priority_array, valid_array = create_priority(grid, n_rows, n_cols)
         solved_grid = recursive_solve(grid, n_rows, n_cols, priority_array)
         return solved_grid
 """
 
-    STMT = """
-    profile_solve(grid, n_rows, n_cols)
-    """
+STMT = """
+profile_solve(grid, n_rows, n_cols)
+"""
+
+
+def solve(grid, n_rows, n_cols):
     """
     Solve function for Sudoku coursework.
     Comment out one of the lines below to either use the random or recursive solver
     """
+
     original_grid = copy.deepcopy(grid)
     if args.profile:
         difficulty = sum(row.count(0) for row in grid)
