@@ -237,19 +237,17 @@ def create_priority(grid, n_rows, n_cols):
     return priority_array, valid_array
 
 
-SETUP = """
-def profile_solve(grid, n_rows, n_cols):
-    priority_array, valid_array = create_priority(grid, n_rows, n_cols)
-    solved_grid = recursive_solve(grid, n_rows, n_cols, priority_array)
-    return solved_grid
-"""
-
-STMT = """
-profile_solve(grid, n_rows, n_cols)
-"""
-
-
 def solve(grid, n_rows, n_cols):
+    SETUP = """
+    def profile_solve(grid, n_rows, n_cols):
+        priority_array, valid_array = create_priority(grid, n_rows, n_cols)
+        solved_grid = recursive_solve(grid, n_rows, n_cols, priority_array)
+        return solved_grid
+"""
+
+    STMT = """
+    profile_solve(grid, n_rows, n_cols)
+    """
     """
     Solve function for Sudoku coursework.
     Comment out one of the lines below to either use the random or recursive solver
@@ -292,12 +290,15 @@ def solve(grid, n_rows, n_cols):
                 print(
                     f"Put {element[0]} in location ({row_number}, {element[1]})"
                 )
-    return solved_grid, {
-        "difficulty": difficulty,
-        "n_rows": n_rows,
-        "n_cols": n_cols,
-        "results": results,
-    }
+    if args.profile:
+        return solved_grid, {
+            "difficulty": difficulty,
+            "n_rows": n_rows,
+            "n_cols": n_cols,
+            "results": results,
+        }
+    else:
+        return solved_grid, None
 
 
 """
