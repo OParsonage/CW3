@@ -102,7 +102,10 @@ def check_solution(grid, n_rows, n_cols):
 		check_row = []
 		for cell in row:
 			if type(cell) == list:
-				check_row.append(0)
+				if len(cell) == 1:
+					check_row.append(cell[0])
+				else:
+					check_row.append(0)
 			else:
 				check_row.append(cell)
 		check_grid.append(check_row)
@@ -146,11 +149,11 @@ def recursive_solve(valid_array, n_rows, n_cols):
 					valid_array[priority_array[i][0]][priority_array[i][1]] = priority_array[i][2][0]
 					priority_array[i][2] = []
 			priority_array, valid_array = create_priority(valid_array, n_rows, n_cols)
-			if len(priority_array[0][2]) == 0:
-				# make valid_array a list version of the tuple branch_array
-				valid_array =[]
-				for row in branch_array:
-					valid_array.append(list(row))
+			if priority_array:
+				if len(priority_array[0][2]) == 0:
+					# make valid_array a list version of the tuple branch_array		
+					return valid_array
+			else:
 				return valid_array
 
 
@@ -163,8 +166,18 @@ def recursive_solve(valid_array, n_rows, n_cols):
 				
 				# check_sol works leave it
 				if check_solution(valid_array, n_rows, n_cols): # if the grid is correct, we return it 
-					return(valid_array)
+					return(to_tuple(valid_array))
 				
+				valid_array =[]
+				for row_chg in branch_array:
+					row_list = []
+					for i in range(len(row_chg)):
+						if type(row_chg[i]) == tuple:
+							row_list.append(list(row_chg[i]))
+						else:
+							row_list.append(row_chg[i])
+					valid_array.append(row_list)
+
 		valid_array[row][column] = priority_array[0][2] 
 		# if there are no options i.e. empty list this cell gets replaced as a list of nothing and returned upwards
 		# as soon as a prioirty list [0][2] has no options it should go back and try the next value in the list from previous
