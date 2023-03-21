@@ -219,7 +219,7 @@ def solve(grid, n_rows, n_cols):
     if args.profile:
         difficulty = sum(row.count(0) for row in grid)
         print(difficulty)
-        results = timeit.repeat(stmt=STMT, setup=SETUP, repeat=10, number=5, globals={"grid": grid, "n_rows": n_cols, "n_cols": n_rows, "create_priority": create_priority, "recursive_solve": recursive_solve})
+        results = timeit.repeat(stmt=STMT, setup=SETUP, repeat=7, number=1000, globals={"grid": grid, "n_rows": n_cols, "n_cols": n_rows, "create_priority": create_priority, "recursive_solve": recursive_solve})
         print(f"Results for difficulty: {difficulty}, grid size: {n_cols}x{n_rows} are: {results}")
     priority_array, valid_array = create_priority(grid, n_rows, n_cols)
     solved_grid = recursive_solve(grid, n_rows, n_cols, priority_array)
