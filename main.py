@@ -52,7 +52,8 @@ grid7 = [
         [2, 0, 6, 0, 3, 0, 7, 0, 0]
 	    ]
 
-#grids = [(grid1, 2, 2), (grid2, 2, 2), (grid3, 2, 2), (grid4, 2, 2), (grid5, 2, 2), (grid6, 2, 3), (grid7, 3, 3)]
+#grids = [(grid1, 2, 2), (grid2, 2, 2), (grid3, 2, 2), (grid4, 2, 2), (grid5, 2, 2), (grid6, 2, 3)]
+#grids = [(grid1, 2, 2)]
 grids = [(grid7, 3, 3)]
 
 '''
@@ -184,16 +185,19 @@ def recursive_solve(grid, n_rows, n_cols, priority_array):
 	# we return the grid if it is already solved
 
 def wavefront_solve(grid, n_rows, n_cols, valid_array, priority_array):
-	if len(priority_array) == 0:
-		return(grid)
 	while len(priority_array[0][2]) > 0:
 		while len(priority_array[0][2]) == 1:
 			priority_array, valid_array, grid = simplify(priority_array, valid_array, grid, n_rows, n_cols)
+			if len(priority_array) == 0:
+				return(grid)
+				
 		if len(priority_array[0][2]) > 1:
 			for index in range(len(priority_array[0][2])):
 				valid_array[priority_array[0][0]][priority_array[0][1]] = priority_array[0][2][index]
 				priority_array[0][2] = priority_array[0][2][1:]
 				wavefront_solve(grid, n_rows, n_cols, valid_array, priority_array)
+				if check_solution(grid, n_rows, n_cols):
+					return grid
 
 def simplify(priority_array, valid_array, grid, n_rows, n_cols):
 	for index in range(0, len(priority_array)):
