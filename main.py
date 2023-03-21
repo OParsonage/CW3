@@ -250,24 +250,21 @@ def create_priority(grid, n_rows, n_cols):
     return priority_array, valid_array
 
 
-def solve(grid, n_rows, n_cols):
-    SETUP = """
-    def profile_solve(grid, n_rows, n_cols):
-        priority_array, valid_array = create_priority(grid, n_rows, n_cols)
-        solved_grid = recursive_solve(grid, n_rows, n_cols, priority_array)
-        return solved_grid
+SETUP = """
+def profile_solve(grid, n_rows, n_cols):
+	priority_array, valid_array = create_priority(grid, n_rows, n_cols)
+	solved_grid = recursive_solve(grid, n_rows, n_cols, priority_array)
+	return solved_grid
 """
 
-    STMT = """
-    profile_solve(grid, n_rows, n_cols)
-    """
-    """
-    Solve function for Sudoku coursework.
-    Comment out one of the lines below to either use the random or recursive solver
-    """
-    original_grid = copy.deepcopy(grid)
-    if args.profile:
-        difficulty = sum(row.count(0) for row in grid)
+STMT = """
+profile_solve(grid, n_rows, n_cols)
+"""
+
+def solve(grid, n_rows, n_cols):
+    original_grid = copy.deepcopy(grid) # we create a copy of the grid to compare with the solved grid
+    if args.profile: # if we want to profile the code
+        difficulty = sum(row.count(0) for row in grid) 	# we calculate the difficulty of the grid
         results = timeit.repeat(
             stmt=STMT,
             setup=SETUP,
@@ -313,6 +310,25 @@ def solve(grid, n_rows, n_cols):
     else:
         return solved_grid, None
 
+def plot(results):
+	import matplotlib.pyplot as plt
+    
+
+	plt.style.use("ggplot")
+	plt.figure(figsize=(10, 5))
+	plt.title("Time taken to solve Sudoku grids")
+	plt.xlabel("Difficulty")
+	plt.ylabel("Time taken (s)")
+	plt.xticks(range(0, 81, 5))
+	plt.yticks(range(0, 2))
+	plt.grid(True)
+	for grid in results: # we plot the results for each grid
+		difficulty = grid['difficulty'] # we get the difficulty of the grid
+		average_time = sum(grid['results']) / len(grid['results']) # we calculate the average time taken to solve the grid
+		print(difficulty, average_time)            
+		plt.bar(difficulty, average_time, label=f"{grid['n_rows']}x{grid['n_cols']}")
+	plt.legend()
+	plt.show()
 
 """
 ===================================
@@ -341,7 +357,8 @@ def _main():
             points = points + 10
         else:
             print("grid %d incorrect" % (i + 1))
-    print(profiling_results)
+    # print(profiling_results)
+    plot(profiling_results)
 
     print("====================================")
     print("Test script complete, Total points: %d" % points)
