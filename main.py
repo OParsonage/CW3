@@ -36,16 +36,6 @@ grid7 = [
     [2, 0, 6, 0, 3, 0, 7, 0, 0],
 ]
 
-grids = [
-    (grid1, 2, 2),
-    (grid2, 2, 2),
-    (grid3, 2, 2),
-    (grid4, 2, 2),
-    (grid5, 2, 2),
-    (grid6, 2, 3),
-    (grid7, 3, 3),
-]
-
 
 def _getArgs():
     parser = argparse.ArgumentParser()
@@ -264,7 +254,7 @@ def solve(grid, n_rows, n_cols, args):
         results = timeit.repeat(
             stmt=STMT,
             setup=SETUP,
-            repeat=7,
+            repeat=10,
             number=1000,
             globals={
                 "grid": grid,
@@ -296,6 +286,19 @@ def solve(grid, n_rows, n_cols, args):
                 print(
                     f"Put {element[0]} in location ({row_number}, {element[1]})"
                 )
+    if args.file:
+        with open(args.file[1], "w") as output:
+            output.write("Solved Grid:\n")
+            writer = csv.writer(output)
+            writer.writerows(solved_grid)
+        if args.explain:
+            with open(args.file[1], "a") as output:
+                output.write("\n\nExplanation:\n")
+                for row_number, row in enumerate(changes):
+                    for element in row:
+                        output.write(
+                            f"Put {element[0]} in location ({row_number}, {element[1]})\n"
+                        )
     if args.profile:
         return solved_grid, {
             "difficulty": difficulty,
@@ -310,6 +313,22 @@ def solve(grid, n_rows, n_cols, args):
 def _main():
     points = 0
     args = _getArgs()
+    if args.file:
+        dims = {"4": (2, 2), "6": (2, 3), "9": (3, 3)}
+        with open(args.file[0], newline="") as gridfile:
+            reader = csv.reader(gridfile)
+            grid = [[int(value) for value in lst] for lst in list(reader)]
+        grids = [(grid, *dims[str(len(grid))])]
+    else:
+        grids = [
+            (grid1, 2, 2),
+            (grid2, 2, 2),
+            (grid3, 2, 2),
+            (grid4, 2, 2),
+            (grid5, 2, 2),
+            (grid6, 2, 3),
+            (grid7, 3, 3),
+        ]
 
     print("Running test script for coursework 1")
     print("====================================")
@@ -328,8 +347,6 @@ def _main():
             points = points + 10
         else:
             print("grid %d incorrect" % (i + 1))
-    print(profiling_results)
-
     print("====================================")
     print("Test script complete, Total points: %d" % points)
 
