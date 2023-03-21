@@ -296,6 +296,32 @@ def solve(grid, n_rows, n_cols, args):
     else:
         return solved_grid, None
 
+def plot(results):
+	import matplotlib.pyplot as plt
+    
+
+	plt.style.use("ggplot")
+	plt.figure(figsize=(10, 5))
+	plt.title("Time taken to solve Sudoku grids")
+	plt.xlabel("Difficulty")
+	plt.ylabel("Time taken (s)")
+	plt.xticks(range(0, 81, 5))
+	plt.yticks(range(0, 2))
+	plt.grid(True)
+	for grid in results: # we plot the results for each grid
+		difficulty = grid['difficulty'] # we get the difficulty of the grid
+		average_time = sum(grid['results']) / len(grid['results']) # we calculate the average time taken to solve the grid
+		print(difficulty, average_time)            
+		plt.bar(difficulty, average_time, label=f"{grid['n_rows']}x{grid['n_cols']}")
+	plt.legend()
+	plt.show()
+
+"""
+===================================
+DO NOT CHANGE CODE BELOW THIS LINE
+===================================
+"""
+
 
 def _main():
     points = 0
@@ -334,6 +360,9 @@ def _main():
             points = points + 10
         else:
             print("grid %d incorrect" % (i + 1))
+    # print(profiling_results)
+    plot(profiling_results)
+
     print("====================================")
     print("Test script complete, Total points: %d" % points)
 
