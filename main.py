@@ -211,6 +211,15 @@ def solve(grid, n_rows, n_cols):
 	Solve function for Sudoku coursework.
 	Comment out one of the lines below to either use the random or recursive solver
 	'''
+	valid_array_init = []
+	for row in range(0, len(grid)): # i is the row
+		valid_array_init.append([])
+		for column in range(0, len(grid)): # j is the column
+			if grid[row][column] == 0: # if the cell is empty
+				valid_array_init[row].append([1,2,3,4,5,6,7,8,9])
+			else:
+				valid_array_init[row].append(grid[row][column])
+
 	priority_array, valid_array = create_priority(grid, n_rows, n_cols, valid_array_init)
 	#return random_solve(grid, n_rows, n_cols)
 	#return recursive_solve(grid, n_rows, n_cols, priority_array)
