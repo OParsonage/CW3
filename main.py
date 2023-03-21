@@ -270,7 +270,6 @@ def solve(grid, n_rows, n_cols):
     original_grid = copy.deepcopy(grid)
     if args.profile:
         difficulty = sum(row.count(0) for row in grid)
-        print(difficulty)
         results = timeit.repeat(
             stmt=STMT,
             setup=SETUP,
@@ -306,7 +305,12 @@ def solve(grid, n_rows, n_cols):
                 print(
                     f"Put {element[0]} in location ({row_number}, {element[1]})"
                 )
-    return solved_grid
+    return solved_grid, {
+        "difficulty": difficulty,
+        "n_rows": n_rows,
+        "n_cols": n_cols,
+        "results": results,
+    }
 
 
 """
@@ -321,20 +325,22 @@ def _main():
 
     print("Running test script for coursework 1")
     print("====================================")
-
+    profiling_results = []
     for i, (grid, n_rows, n_cols) in enumerate(grids):
         print("Solving grid: %d" % (i + 1))
         start_time = time.time()
         solution = solve(grid, n_rows, n_cols)
+        profiling_results.append(solution[1])
         elapsed_time = time.time() - start_time
         print("Solved in: %f seconds" % elapsed_time)
-        for line in solution:
+        for line in solution[0]:
             print(line)
-        if check_solution(solution, n_rows, n_cols):
+        if check_solution(solution[0], n_rows, n_cols):
             print("grid %d correct" % (i + 1))
             points = points + 10
         else:
             print("grid %d incorrect" % (i + 1))
+    print(profiling_results)
 
     print("====================================")
     print("Test script complete, Total points: %d" % points)
