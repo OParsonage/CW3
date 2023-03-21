@@ -120,10 +120,10 @@ def recursive_solve(valid_array, n_rows, n_cols):
 	n_rows: number of boxes horizontally
 	n_cols: number of boxes vertically'''
 	priority_array, valid_array = create_priority(valid_array, n_rows, n_cols)
-	if priority_array:
+	if len(priority_array) > 0:
 		row = priority_array[0][0]
 		column = priority_array[0][1]
-		for value in priority_array[0][2]: # value is the number we are trying to put in the cell
+		for value in priority_array[0][2]: # value is the number we are trying to put in the cell 
 			if valid(valid_array, row, column, value, n_rows, n_cols): # test that the value entered could be part of a valid solution
 				valid_array[row][column] = value
 				recursive_solve(valid_array, n_rows, n_cols) # we call the function recursively
@@ -132,7 +132,10 @@ def recursive_solve(valid_array, n_rows, n_cols):
 				if check_solution(valid_array, n_rows, n_cols): # if the grid is correct, we return it 
 					return(valid_array)
 				
-		valid_array[row][column] = priority_array[0][2]
+		valid_array[row][column] = priority_array[0][2] 
+		# if there are no options i.e. empty list this cell gets replaced as a list of nothing and returned upwards
+		# as soon as a prioirty list [0][2] has no options it should go back and try the next value in the list from previous
+
 	return(valid_array)
 # we return the grid if it is already solved
 
@@ -148,6 +151,20 @@ def valid(grid, row_index, column_index, number, n_rows, n_cols):
 		n_cols: number of boxes vertically
 	Outputs: 
 		Boolean True/False'''
+	# make a copy of the grid as tuple
+	grid = [list(row) for row in grid]
+	
+	# make a check_grid where any lists are zeros
+	check_grid = []
+	for row in grid:
+		check_row = []
+		for cell in row:
+			if type(cell) == list:
+				check_row.append(0)
+			else:
+				check_row.append(cell)
+		check_grid.append(check_row)
+
 	if number in grid[row_index]: # if the number is already in the row, it is not valid
 		return False
 	column = [grid[n][column_index] for n in range(0,len(grid))] # we create a list of the numbers in the column
