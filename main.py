@@ -1,4 +1,8 @@
 import time
+import csv
+import argparse
+import copy
+import timeit
 
 # Grids 1-5 are 2x2
 grid1 = [[1, 0, 4, 2], [4, 2, 1, 3], [2, 1, 3, 4], [3, 4, 2, 1]]
@@ -41,44 +45,36 @@ grids = [
     (grid6, 2, 3),
     (grid7, 3, 3),
 ]
-# grids = [(grid7, 3, 3)]
 
-"""
-===================================
-DO NOT CHANGE CODE ABOVE THIS LINE
-===================================
-"""
-# TODO Entrypoint function
 
-import csv
-import argparse
-import copy
-import timeit
+def _getArgs():
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--explain",
+        help="Provide set of instructions for solving grid",
+        default=False,
+        action=argparse.BooleanOptionalAction,
+    )
+    parser.add_argument(
+        "--file",
+        nargs=2,
+        metavar=("INPUT", "OUTPUT"),
+        help="Input file for grid to solve and output file for solved grid. If 'explain' is set then include explanations",
+    )
+    parser.add_argument(
+        "--hint",
+        help="Integer value for number of values to fill",
+        default=None,
+    )
+    parser.add_argument(
+        "--profile",
+        help="Measure performance and produce plots using 'timeit'",
+        default=False,
+        action=argparse.BooleanOptionalAction,
+    )
 
-parser = argparse.ArgumentParser()
-parser.add_argument(
-    "--explain",
-    help="Provide set of instructions for solving grid",
-    default=False,
-    action=argparse.BooleanOptionalAction,
-)
-parser.add_argument(
-    "--file",
-    nargs=2,
-    metavar=("INPUT", "OUTPUT"),
-    help="Input file for grid to solve and output file for solved grid. If 'explain' is set then include explanations",
-)
-parser.add_argument(
-    "--hint", help="Integer value for number of values to fill", default=None
-)
-parser.add_argument(
-    "--profile",
-    help="Measure performance and produce plots using 'timeit'",
-    default=False,
-    action=argparse.BooleanOptionalAction,
-)
-
-args = parser.parse_args()
+    args = parser.parse_args()
+    return args
 
 
 def check_section(section, n):
@@ -87,12 +83,6 @@ def check_section(section, n):
     ):
         return True
     return False
-
-
-def reader(data_file):  # function to read the data from the csv file
-    with open(data_file) as data:
-        all_data = csv.reader(data)  # read the data
-        return list(all_data)  # return the data as a list
 
 
 def get_squares(grid, n_rows, n_cols):
@@ -249,7 +239,7 @@ profile_solve(grid, n_rows, n_cols)
 """
 
 
-def solve(grid, n_rows, n_cols):
+def solve(grid, n_rows, n_cols, args):
     """
     Solve function for Sudoku coursework.
     Comment out one of the lines below to either use the random or recursive solver
@@ -304,15 +294,9 @@ def solve(grid, n_rows, n_cols):
         return solved_grid, None
 
 
-"""
-===================================
-DO NOT CHANGE CODE BELOW THIS LINE
-===================================
-"""
-
-
 def _main():
     points = 0
+    args = _getArgs()
 
     print("Running test script for coursework 1")
     print("====================================")
@@ -320,7 +304,7 @@ def _main():
     for i, (grid, n_rows, n_cols) in enumerate(grids):
         print("Solving grid: %d" % (i + 1))
         start_time = time.time()
-        solution = solve(grid, n_rows, n_cols)
+        solution = solve(grid, n_rows, n_cols, args)
         profiling_results.append(solution[1])
         elapsed_time = time.time() - start_time
         print("Solved in: %f seconds" % elapsed_time)
