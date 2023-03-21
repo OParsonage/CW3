@@ -93,6 +93,21 @@ def check_solution(grid, n_rows, n_cols):
 	returns: True (correct solution) or False (incorrect solution)
 	'''
 	n = n_rows*n_cols
+	
+	grid = [list(row) for row in grid]
+	
+	# make a check_grid where any lists are zeros
+	check_grid = []
+	for row in grid:
+		check_row = []
+		for cell in row:
+			if type(cell) == list:
+				check_row.append(0)
+			else:
+				check_row.append(cell)
+		check_grid.append(check_row)
+	
+	grid = check_grid
 
 	for row in grid:
 		if check_section(row, n) == False:
@@ -119,8 +134,26 @@ def recursive_solve(valid_array, n_rows, n_cols):
 	grid: initial grid to solve
 	n_rows: number of boxes horizontally
 	n_cols: number of boxes vertically'''
+	
 	priority_array, valid_array = create_priority(valid_array, n_rows, n_cols)
 	if len(priority_array) > 0:
+		branch_array = to_tuple(valid_array)
+		# while length of first value in priiority_array[0][2] is 1
+		while len(priority_array[0][2]) == 1:
+			# find all numbers with length 1 in priority_array position [i][2] and enter into valid_array
+			for i in range(len(priority_array)):
+				if len(priority_array[i][2]) == 1:
+					valid_array[priority_array[i][0]][priority_array[i][1]] = priority_array[i][2][0]
+					priority_array[i][2] = []
+			priority_array, valid_array = create_priority(valid_array, n_rows, n_cols)
+			if len(priority_array[0][2]) == 0:
+				# make valid_array a list version of the tuple branch_array
+				valid_array =[]
+				for row in branch_array:
+					valid_array.append(list(row))
+				return valid_array
+
+
 		row = priority_array[0][0]
 		column = priority_array[0][1]
 		for value in priority_array[0][2]: # value is the number we are trying to put in the cell 
@@ -164,6 +197,8 @@ def valid(grid, row_index, column_index, number, n_rows, n_cols):
 			else:
 				check_row.append(cell)
 		check_grid.append(check_row)
+	
+	grid = check_grid
 
 	if number in grid[row_index]: # if the number is already in the row, it is not valid
 		return False
