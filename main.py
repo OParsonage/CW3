@@ -36,114 +36,108 @@ grid7 = [
     [2, 0, 6, 0, 3, 0, 7, 0, 0],
 ]
 
-grid8 = [    
-		[0, 0, 0, 0, 0, 3, 0, 0, 0],
-		[0, 0, 0, 0, 8, 0, 4, 0, 0],
-		[0, 9, 4, 0, 0, 0, 0, 0, 0],
-		[0, 0, 0, 0, 0, 0, 0, 0, 9],
-		[0, 0, 0, 0, 0, 0, 0, 0, 0],
-		[0, 0, 0, 0, 0, 0, 2, 0, 0],
-		[0, 0, 0, 0, 0, 0, 0, 8, 0],
-		[0, 0, 0, 0, 0, 0, 0, 0, 7],
-    	[0, 0, 0, 0, 0, 0, 0, 0, 0]
-		]
+grid8 = [
+    [0, 0, 0, 0, 0, 3, 0, 0, 0],
+    [0, 0, 0, 0, 8, 0, 4, 0, 0],
+    [0, 9, 4, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 9],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 2, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 8, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 7],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+]
 
 # 4x4 grid 1, 2 missing digits
-grid9 = [
-		[1, 2, 0, 0],
-		[3, 0, 0, 0],
-		[0, 0, 1, 2],
-		[2, 1, 0, 0]
-		]
+grid9 = [[1, 2, 0, 0], [3, 0, 0, 0], [0, 0, 1, 2], [2, 1, 0, 0]]
 
 # 4x4 grid 2, 4 missing digits
-grid10 = [
-		[2, 1, 0, 0],
-		[0, 3, 0, 0],
-		[1, 0, 0, 0],
-		[0, 0, 0, 4]
-		]
+grid10 = [[2, 1, 0, 0], [0, 3, 0, 0], [1, 0, 0, 0], [0, 0, 0, 4]]
 
 # 4x4 grid 3, 6 missing digits
-grid11 = [
-		[0, 2, 0, 0],
-		[0, 0, 0, 4],
-		[1, 0, 0, 0],
-		[0, 0, 3, 0]
-		]
+grid11 = [[0, 2, 0, 0], [0, 0, 0, 4], [1, 0, 0, 0], [0, 0, 3, 0]]
 
 # 4x4 grid 4, 8 missing digits
-grid12 = [
-		[0, 2, 0, 0],
-		[0, 0, 0, 0],
-		[0, 0, 0, 0],
-		[0, 0, 0, 0]
-		]
+grid12 = [[0, 2, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]
 
 # 4x4 grid 5, 10 missing digits
-grid13 = [
-		[0, 0, 0, 0],
-		[0, 0, 0, 0],
-		[0, 0, 0, 0],
-		[0, 0, 0, 0]
-		]
+grid13 = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]
 
 # 6x6 grid 1
 grid14 = [
-		[1, 0, 0, 0, 0, 0],
-		[0, 2, 0, 0, 0, 0],
-		[0, 0, 3, 0, 0, 0],
-		[0, 0, 0, 4, 0, 0],
-		[0, 0, 0, 0, 5, 0],
-		[0, 0, 0, 0, 0, 6]
-		]
+    [1, 0, 0, 0, 0, 0],
+    [0, 2, 0, 0, 0, 0],
+    [0, 0, 3, 0, 0, 0],
+    [0, 0, 0, 4, 0, 0],
+    [0, 0, 0, 0, 5, 0],
+    [0, 0, 0, 0, 0, 6],
+]
 # 6x6 grid 4, 18 missing digits
 grid15 = [
-		[0, 0, 0, 5, 0, 0],
-		[0, 0, 0, 0, 0, 0],
-		[6, 0, 0, 0, 0, 0],
-		[0, 0, 0, 0, 4, 0],
-		[0, 0, 4, 0, 0, 0],
-		[0, 0, 0, 0, 0, 6]
-		]
+    [0, 0, 0, 5, 0, 0],
+    [0, 0, 0, 0, 0, 0],
+    [6, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 4, 0],
+    [0, 0, 4, 0, 0, 0],
+    [0, 0, 0, 0, 0, 6],
+]
 
 # 6x6 grid 5, 21 missing digits
 grid16 = [
-		[0, 0, 0, 0, 0, 0],
-		[5, 0, 0, 0, 0, 0],
-		[0, 0, 0, 0, 0, 0],
-		[0, 0, 0, 0, 0, 0],
-		[6, 0, 0, 0, 0, 0],
-		[0, 0, 0, 0, 0, 0]
-		]
+    [0, 0, 0, 0, 0, 0],
+    [5, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0],
+    [6, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0],
+]
 
 # 9x9 grid 4, 40 missing digits
 grid17 = [
-		[0, 0, 0, 2, 6, 0, 0, 0, 0],
-		[0, 0, 0, 0, 0, 8, 0, 0, 1],
-		[0, 8, 0, 0, 0, 0, 2, 3, 0],
-		[0, 0, 6, 0, 0, 0, 0, 0, 0],
-		[0, 0, 0, 0, 0, 9, 0, 7, 0],
-		[0, 5, 0, 0, 0, 0, 0, 0, 0],
-		[0, 0, 0, 0, 0, 4, 0, 0, 0],
-		[0, 1, 0, 6, 0, 0, 0, 0, 0],
-		[0, 0, 7, 0, 0, 0, 0, 5, 0]
-		]
+    [0, 0, 0, 2, 6, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 8, 0, 0, 1],
+    [0, 8, 0, 0, 0, 0, 2, 3, 0],
+    [0, 0, 6, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 9, 0, 7, 0],
+    [0, 5, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 4, 0, 0, 0],
+    [0, 1, 0, 6, 0, 0, 0, 0, 0],
+    [0, 0, 7, 0, 0, 0, 0, 5, 0],
+]
 
 # 9x9 grid 5, 45 missing digits
 grid18 = [
-		[0, 0, 0, 0, 0, 0, 0, 0, 0],
-		[0, 0, 0, 0, 0, 0, 0, 0, 0],
-		[0, 0, 0, 0, 0, 0, 0, 0, 0],
-		[0, 0, 0, 0, 0, 0, 0, 0, 0],
-		[0, 0, 0, 0, 0, 0, 0, 0, 0],
-		[0, 0, 0, 0, 0, 0, 0, 0, 0],
-		[0, 0, 0, 0, 0, 0, 0, 0, 0],
-		[0, 0, 0, 0, 0, 0, 0, 0, 0],
-		[0, 0, 0, 0, 0, 0, 0, 0, 0]
-		]
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+]
 
-grids = [(grid1, 2, 2), (grid2, 2, 2), (grid3, 2, 2), (grid4, 2, 2), (grid5, 2, 2), (grid6, 2, 3), (grid7, 3, 3), (grid8, 3, 3), (grid9, 2, 2), (grid10, 2, 2), (grid11, 2, 2), (grid12, 2, 2), (grid13, 2, 2), (grid14, 2, 3), (grid15, 2, 3), (grid16, 2, 3), (grid17, 3, 3), (grid18, 3, 3)] 
+grids = [
+    (grid1, 2, 2),
+    (grid2, 2, 2),
+    (grid3, 2, 2),
+    (grid4, 2, 2),
+    (grid5, 2, 2),
+    (grid6, 2, 3),
+    (grid7, 3, 3),
+    (grid8, 3, 3),
+    (grid9, 2, 2),
+    (grid10, 2, 2),
+    (grid11, 2, 2),
+    (grid12, 2, 2),
+    (grid13, 2, 2),
+    (grid14, 2, 3),
+    (grid15, 2, 3),
+    (grid16, 2, 3),
+    (grid17, 3, 3),
+    (grid18, 3, 3),
+]
 
 
 def _getArgs():
@@ -418,6 +412,7 @@ def solve(grid, n_rows, n_cols, args):
     else:
         return solved_grid, None
 
+
 def plot(results):
     import matplotlib.pyplot as plt
 
@@ -430,18 +425,27 @@ def plot(results):
     plt.yticks(range(0, 2))
     plt.grid(True)
     grid_number = 0
-    for grid in results: # we plot the results for each grid
+    for grid in results:  # we plot the results for each grid
         grid_number += 1
-        difficulty = grid['difficulty'] # we get the difficulty of the grid
-        average_time = sum(grid['results']) / len(grid['results']) # we calculate the average time taken to solve the grid
-        print(difficulty, average_time)            
-        plt.bar(difficulty, average_time, label=f"Grid {grid_number}: {grid['n_rows']}x{grid['n_cols']}", width=0.5)
+        difficulty = grid["difficulty"]  # we get the difficulty of the grid
+        average_time = sum(grid["results"]) / len(
+            grid["results"]
+        )  # we calculate the average time taken to solve the grid
+        print(difficulty, average_time)
+        plt.bar(
+            difficulty,
+            average_time,
+            label=f"Grid {grid_number}: {grid['n_rows']}x{grid['n_cols']}",
+            width=0.5,
+        )
     plt.legend(loc="upper right")
     plt.show()
-    
+
+
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.stats import linregress
+
 
 def plot1(results):
     plt.style.use("ggplot")
@@ -452,43 +456,60 @@ def plot1(results):
     ax.set_xticks(range(0, 81, 5))
     ax.set_yticks(np.arange(0, 2.5, 0.25))
     ax.grid(True)
-    
+
     # Define color map for difficulty levels
     cmap = plt.get_cmap("viridis")
-    
+
     grid_number = 0
-    for grid in results: # we plot the results for each grid
+    for grid in results:  # we plot the results for each grid
         grid_number += 1
-        difficulty = grid['difficulty'] # we get the difficulty of the grid
-        average_time = np.mean(grid['results']) # we calculate the average time taken to solve the grid
-        std_dev = np.std(grid['results']) # we calculate the standard deviation of the time taken to solve the grid
-        
+        difficulty = grid["difficulty"]  # we get the difficulty of the grid
+        average_time = np.mean(
+            grid["results"]
+        )  # we calculate the average time taken to solve the grid
+        std_dev = np.std(
+            grid["results"]
+        )  # we calculate the standard deviation of the time taken to solve the grid
+
         # Add error bars to bar plot
-        ax.bar(difficulty, average_time, yerr=std_dev, capsize=5, 
-               color=cmap(difficulty/80), label=f"Grid {grid_number}: {grid['n_rows']}x{grid['n_cols']}")
-    
+        ax.bar(
+            difficulty,
+            average_time,
+            yerr=std_dev,
+            capsize=5,
+            color=cmap(difficulty / 80),
+            label=f"Grid {grid_number}: {grid['n_rows']}x{grid['n_cols']}",
+        )
+
     # Increase font size of axis labels
     ax.tick_params(axis="both", labelsize=12)
-    
+
     # Set y-axis to logarithmic scale
     ax.set_yscale("log")
-    
+
     # Add subtitle with additional information about the data
-    fig.text(0.5, 0.001, "Data based on 18 Sudoku puzzles solved 7 times each using a recursive algorithm", ha="center", fontsize=12)
-    
+    fig.text(
+        0.5,
+        0.001,
+        "Data based on 18 Sudoku puzzles solved 7 times each using a recursive algorithm",
+        ha="center",
+        fontsize=12,
+    )
+
     # Add color bar to indicate difficulty levels
     sm = plt.cm.ScalarMappable(cmap=cmap, norm=plt.Normalize(vmin=0, vmax=80))
     cbar = fig.colorbar(sm, ax=ax, ticks=range(0, 81, 10), shrink=0.8)
     cbar.set_label("Difficulty", fontsize=12)
-    
-    plt.legend(bbox_to_anchor=(1.2, 1), loc='upper left')
+
+    plt.legend(bbox_to_anchor=(1.2, 1), loc="upper left")
     plt.tight_layout()
     plt.show()
-    
+
+
 # creating a similar plot using a scatter graph
 
-def plot2(results):
 
+def plot2(results):
     plt.style.use("ggplot")
     fig, ax = plt.subplots(figsize=(10, 5))
     ax.set_title("Time taken to solve Sudoku puzzles")
@@ -502,39 +523,63 @@ def plot2(results):
     cmap = plt.get_cmap("viridis")
 
     grid_number = 0
-    for grid in results: # we plot the results for each grid
+    for grid in results:  # we plot the results for each grid
         grid_number += 1
-        difficulty = grid['difficulty'] # we get the difficulty of the grid
-        average_time = np.mean(grid['results']) # we calculate the average time taken to solve the grid
-        std_dev = np.std(grid['results']) # we calculate the standard deviation of the time taken to solve the grid
+        difficulty = grid["difficulty"]  # we get the difficulty of the grid
+        average_time = np.mean(
+            grid["results"]
+        )  # we calculate the average time taken to solve the grid
+        std_dev = np.std(
+            grid["results"]
+        )  # we calculate the standard deviation of the time taken to solve the grid
 
         # Add error bars to scatter plot
-        ax.errorbar(difficulty, average_time, yerr=std_dev, fmt='x', capsize=5, color=cmap(difficulty/80), label=f"Grid {grid_number}: {grid['n_rows']}x{grid['n_cols']}")
-    
-	 # Compute and plot line of best fit
-    x = [grid['difficulty'] for grid in results]
-    y = [np.mean(grid['results']) for grid in results]
+        ax.errorbar(
+            difficulty,
+            average_time,
+            yerr=std_dev,
+            fmt="x",
+            capsize=5,
+            color=cmap(difficulty / 80),
+            label=f"Grid {grid_number}: {grid['n_rows']}x{grid['n_cols']}",
+        )
+
+    # Compute and plot line of best fit
+    x = [grid["difficulty"] for grid in results]
+    y = [np.mean(grid["results"]) for grid in results]
     slope, intercept, r_value, p_value, std_err = linregress(x, y)
-    ax.plot(x, slope*np.array(x)+intercept, color='black', label=f"Line of best fit: y={slope:.3f}x+{intercept:.3f}")
+    ax.plot(
+        x,
+        slope * np.array(x) + intercept,
+        color="black",
+        label=f"Line of best fit: y={slope:.3f}x+{intercept:.3f}",
+    )
 
     # Increase font size of axis labels
     ax.tick_params(axis="both", labelsize=12)
 
     # Set y-axis to logarithmic scale
-    ax.set_yscale("log") # does this need changing? ###### because the one poor result
+    ax.set_yscale(
+        "log"
+    )  # does this need changing? ###### because the one poor result
 
     # Add subtitle with additional information about the data
-    fig.text(0.5, 0.001, "Data based on 18 Sudoku puzzles solved 7 times each using a recursive algorithm", ha="center", fontsize=12)
+    fig.text(
+        0.5,
+        0.001,
+        "Data based on 18 Sudoku puzzles solved 7 times each using a recursive algorithm",
+        ha="center",
+        fontsize=12,
+    )
 
     # Add color bar to indicate difficulty levels
     sm = plt.cm.ScalarMappable(cmap=cmap, norm=plt.Normalize(vmin=0, vmax=80))
     cbar = fig.colorbar(sm, ax=ax, ticks=range(0, 81, 10), shrink=0.8)
     cbar.set_label("Difficulty", fontsize=12)
 
-    plt.legend(bbox_to_anchor=(1.2, 1), loc='upper left')
+    plt.legend(bbox_to_anchor=(1.2, 1), loc="upper left")
     plt.tight_layout()
     plt.show()
-    
 
 
 """
@@ -562,8 +607,18 @@ def _main():
             (grid5, 2, 2),
             (grid6, 2, 3),
             (grid7, 3, 3),
+            (grid8, 3, 3),
+            (grid9, 2, 2),
+            (grid10, 2, 2),
+            (grid11, 2, 2),
+            (grid12, 2, 2),
+            (grid13, 2, 2),
+            (grid14, 2, 3),
+            (grid15, 2, 3),
+            (grid16, 2, 3),
+            (grid17, 3, 3),
+            (grid18, 3, 3),
         ]
-
     print("Running test script for coursework 1")
     print("====================================")
     profiling_results = []
@@ -582,7 +637,9 @@ def _main():
         else:
             print("grid %d incorrect" % (i + 1))
     # print(profiling_results)
-    plot1(profiling_results) # how do i make this only run with the flags ######
+    plot1(
+        profiling_results
+    )  # how do i make this only run with the flags ######
     plot2(profiling_results)
 
     print("====================================")
