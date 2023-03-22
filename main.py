@@ -597,12 +597,10 @@ def _main():
         grids = copy.deepcopy(original_grids)
         print("Running test script for coursework 1")
         print("====================================")
-        # profiling_results = []
         for i, (grid, n_rows, n_cols) in enumerate(grids):
             print("Solving grid: %d" % (i + 1))
             start_time = time.time()
             solution = solve(grid, n_rows, n_cols, args)
-            # profiling_results.append(solution[1])
             elapsed_time = time.time() - start_time
             print("Solved in: %f seconds" % elapsed_time)
             for line in solution:
@@ -614,16 +612,13 @@ def _main():
                     explain(original_grids[i][0], solution, True)
             else:
                 print("grid %d incorrect" % (i + 1))
-        # print(profiling_results)
         if args.profile:
             repeats = 10
             profiling_results = [
                 profiling(grid, n_rows, n_cols, repeats)
                 for _, (grid, n_rows, n_cols) in enumerate(original_grids)
             ]
-            plot1(
-                profiling_results, repeats
-            )  # how do i make this only run with the flags ######
+            plot1(profiling_results, repeats)
             plot2(profiling_results, repeats)
 
         print("====================================")
