@@ -462,6 +462,9 @@ def barplot(results, repeats):
     # Define color map for difficulty levels
     cmap = plt.get_cmap("rainbow")
 
+    # sorting the grids by difficulty
+    results.sort(key=lambda x: x["difficulty"])
+
     grid_number = 0
     for grid in results:  # we plot the results for each grid
         grid_number += 1
@@ -507,6 +510,10 @@ def barplot(results, repeats):
     x = np.array([grid.difficulty for grid in results])
     y = np.array([np.mean(grid.timeit_results) for grid in results])
 
+    # sorting x and y values by ascending y values
+    x = x[np.argsort(x)]
+    y = y[np.argsort(x)]
+
     # Fit a logarithmic polynomial to the data
     z = np.polyfit(np.log(x), np.log(y), 1)
     f = np.poly1d(z)
@@ -519,7 +526,6 @@ def barplot(results, repeats):
         linestyle="--",
         label="Line of best fit (log-log)",
     )
-
     # Add legend
     plt.legend(bbox_to_anchor=(1.2, 1), loc="upper left")
     plt.tight_layout()
