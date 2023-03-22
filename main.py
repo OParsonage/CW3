@@ -231,14 +231,14 @@ def create_priority(grid, n_rows, n_cols):
 
 
 SETUP = """
-def profile_solve(grid, n_rows, n_cols):
-        priority_array, valid_array = create_priority(grid, n_rows, n_cols)
-        solved_grid = recursive_solve(grid, n_rows, n_cols, priority_array)
-        return solved_grid
-"""
+import copy
+grid_to_test = copy.deepcopy(grid)
+"""  # Deepcopy required to prevent mutation of grid variable for subsequent runs. Setup code is not included in execution time.
+
 
 STMT = """
-profile_solve(grid, n_rows, n_cols)
+priority_array, valid_array = create_priority(grid_to_test, n_rows, n_cols)
+solved_grid = recursive_solve(grid_to_test, n_rows, n_cols, priority_array)
 """
 
 
@@ -254,8 +254,8 @@ def solve(grid, n_rows, n_cols, args):
         results = timeit.repeat(
             stmt=STMT,
             setup=SETUP,
-            repeat=10,
-            number=1000,
+            repeat=100,
+            number=1,
             globals={
                 "grid": grid,
                 "n_rows": n_cols,
