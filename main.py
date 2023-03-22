@@ -323,13 +323,12 @@ def create_priority(grid, n_rows, n_cols):
     return priority_array, valid_array
 
 
-def solve(grid, n_rows, n_cols, args):
+def solve(grid, n_rows, n_cols):
     """
     Solve function for Sudoku coursework.
     Comment out one of the lines below to either use the random or recursive solver
     """
 
-    original_grid = copy.deepcopy(grid)
     priority_array, valid_array = create_priority(grid, n_rows, n_cols)
     solved_grid = recursive_solve(grid, n_rows, n_cols, priority_array)
     return solved_grid
@@ -702,7 +701,7 @@ def _main():
                 [int(value) for value in lst] for lst in list(reader)
             ]
             solution = solve(
-                copy.deepcopy(grid_input), *dims[str(len(grid_input))], args
+                copy.deepcopy(grid_input), *dims[str(len(grid_input))]
             )
         if args.explain:
             changes = explain(grid_input, solution, False)
@@ -736,7 +735,7 @@ def _main():
         for i, (grid, n_rows, n_cols) in enumerate(grids):
             print("Solving grid: %d" % (i + 1))
             start_time = time.time()
-            solution = solve(grid, n_rows, n_cols, args)
+            solution = solve(grid, n_rows, n_cols)
             elapsed_time = time.time() - start_time
             print("Solved in: %f seconds" % elapsed_time)
             for line in solution:
