@@ -357,24 +357,28 @@ def solve(grid, n_rows, n_cols, args):
     original_grid = copy.deepcopy(grid)
     priority_array, valid_array = create_priority(grid, n_rows, n_cols)
     solved_grid = recursive_solve(grid, n_rows, n_cols, priority_array)
-    if args.explain:
-        changes = []
-        for index, row in enumerate(original_grid):
-            changes.append(
-                [
-                    (i, updated)
-                    for i, (zero, updated) in enumerate(
-                        zip(row, solved_grid[index])
-                    )
-                    if zero != updated
-                ]
-            )
+    return solved_grid
+
+
+def explain(original_grid, solved_grid, to_terminal):
+    changes = []
+    for index, row in enumerate(original_grid):
+        changes.append(
+            [
+                (i, updated)
+                for i, (zero, updated) in enumerate(
+                    zip(row, solved_grid[index])
+                )
+                if zero != updated
+            ]
+        )
+    if to_terminal:
         for row_number, row in enumerate(changes):
             for element in row:
                 print(
                     f"Put {element[0]} in location ({row_number}, {element[1]})"
                 )
-    return solved_grid
+    return changes
 
 
 def to_file(args, solved_grid, changes):
@@ -553,13 +557,6 @@ def plot2(results, repeats):
     plt.show()
 
 
-"""
-===================================
-DO NOT CHANGE CODE BELOW THIS LINE
-===================================
-"""
-
-
 def _main():
     points = 0
     args = _getArgs()
@@ -570,8 +567,14 @@ def _main():
             grid_input = [
                 [int(value) for value in lst] for lst in list(reader)
             ]
-            solution = solve(grid_input, *dims[str(len(grid_input))], args)
-        to_file(args, solution, None)
+            solution = solve(
+                copy.deepcopy(grid_input), *dims[str(len(grid_input))], args
+            )
+        if args.explain:
+            changes = explain(grid_input, solution, False)
+        else:
+            changes = None
+        to_file(args, solution, changes)
     else:
         original_grids = [
             (grid1, 2, 2),
@@ -609,6 +612,8 @@ def _main():
             if check_solution(solution, n_rows, n_cols):
                 print("grid %d correct" % (i + 1))
                 points = points + 10
+                if args.explain:
+                    explain(original_grids[i][0], solution, True)
             else:
                 print("grid %d incorrect" % (i + 1))
         # print(profiling_results)
