@@ -336,18 +336,6 @@ def create_priority(grid, n_rows, n_cols):
     return priority_array, valid_array
 
 
-SETUP = """
-import copy
-grid_to_test = copy.deepcopy(grid)
-"""  # Deepcopy required to prevent mutation of grid variable for subsequent runs. Setup code is not included in execution time.
-
-
-STMT = """
-priority_array, valid_array = create_priority(grid_to_test, n_rows, n_cols)
-solved_grid = recursive_solve(grid_to_test, n_rows, n_cols, priority_array)
-"""
-
-
 def solve(grid, n_rows, n_cols, args):
     """
     Solve function for Sudoku coursework.
@@ -400,6 +388,16 @@ def to_file(args, solved_grid, changes):
 
 
 def profiling(grid, n_cols, n_rows, repeat):
+    SETUP = """
+import copy
+grid_to_test = copy.deepcopy(grid)
+"""  # Deepcopy required to prevent mutation of grid variable for subsequent runs. Setup code is not included in execution time.
+
+    STMT = """
+priority_array, valid_array = create_priority(grid_to_test, n_rows, n_cols)
+solved_grid = recursive_solve(grid_to_test, n_rows, n_cols, priority_array)
+"""
+
     difficulty = sum(row.count(0) for row in grid)
     results = timeit.repeat(
         stmt=STMT,
