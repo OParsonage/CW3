@@ -360,19 +360,6 @@ def solve(grid, n_rows, n_cols, args):
                 print(
                     f"Put {element[0]} in location ({row_number}, {element[1]})"
                 )
-    if args.file:
-        with open(args.file[1], "w") as output:
-            output.write("Solved Grid:\n")
-            writer = csv.writer(output)
-            writer.writerows(solved_grid)
-        if args.explain:
-            with open(args.file[1], "a") as output:
-                output.write("\n\nExplanation:\n")
-                for row_number, row in enumerate(changes):
-                    for element in row:
-                        output.write(
-                            f"Put {element[0]} in location ({row_number}, {element[1]})\n"
-                        )
     return solved_grid
 
 def plot(results):
@@ -442,6 +429,21 @@ def plot1(results):
     plt.tight_layout()
     plt.show()
     
+def to_file(args, solved_grid, changes):
+    with open(args.file[1], "w") as output:
+        output.write("Solved Grid:\n")
+        writer = csv.writer(output)
+        writer.writerows(solved_grid)
+    if args.explain:
+        with open(args.file[1], "a") as output:
+            output.write("\n\nExplanation:\n")
+            for row_number, row in enumerate(changes):
+                for element in row:
+                    output.write(
+                        f"Put {element[0]} in location ({row_number}, {element[1]})\n"
+                    )
+
+
 # creating a similar plot using a scatter graph
 
 def plot2(results):
@@ -698,10 +700,13 @@ def _main():
     args = _getArgs()
     if args.file:
         dims = {"4": (2, 2), "6": (2, 3), "9": (3, 3)}
-        with open(args.file[0], newline="") as gridfile:
+        with open(args.file[0], "r", newline="") as gridfile:
             reader = csv.reader(gridfile)
-            grid = [[int(value) for value in lst] for lst in list(reader)]
-        grids = [(grid, *dims[str(len(grid))])]
+            grid_input = [
+                [int(value) for value in lst] for lst in list(reader)
+            ]
+            solution = solve(grid_input, *dims[str(len(grid_input))], args)
+        to_file(args, solution, None)
     else:
         original_grids = [
             (grid1, 2, 2),
@@ -724,37 +729,37 @@ def _main():
             (grid18, 3, 3),
         ]
         grids = copy.deepcopy(original_grids)
-    print("Running test script for coursework 1")
-    print("====================================")
-    # profiling_results = []
-    for i, (grid, n_rows, n_cols) in enumerate(grids):
-        print("Solving grid: %d" % (i + 1))
-        start_time = time.time()
-        solution = solve(grid, n_rows, n_cols, args)
-        # profiling_results.append(solution[1])
-        elapsed_time = time.time() - start_time
-        print("Solved in: %f seconds" % elapsed_time)
-        for line in solution:
-            print(line)
-        if check_solution(solution, n_rows, n_cols):
-            print("grid %d correct" % (i + 1))
-            points = points + 10
-        else:
-            print("grid %d incorrect" % (i + 1))
-    # print(profiling_results)
-    if args.profile:
-        repeats = 10
-        profiling_results = [
-            profiling(grid, n_rows, n_cols, repeats)
-            for _, (grid, n_rows, n_cols) in enumerate(original_grids)
-        ]
-        plot1(
-            profiling_results, repeats
-        )  # how do i make this only run with the flags ######
-        plot2(profiling_results, repeats)
+        print("Running test script for coursework 1")
+        print("====================================")
+        # profiling_results = []
+        for i, (grid, n_rows, n_cols) in enumerate(grids):
+            print("Solving grid: %d" % (i + 1))
+            start_time = time.time()
+            solution = solve(grid, n_rows, n_cols, args)
+            # profiling_results.append(solution[1])
+            elapsed_time = time.time() - start_time
+            print("Solved in: %f seconds" % elapsed_time)
+            for line in solution:
+                print(line)
+            if check_solution(solution, n_rows, n_cols):
+                print("grid %d correct" % (i + 1))
+                points = points + 10
+            else:
+                print("grid %d incorrect" % (i + 1))
+        # print(profiling_results)
+        if args.profile:
+            repeats = 10
+            profiling_results = [
+                profiling(grid, n_rows, n_cols, repeats)
+                for _, (grid, n_rows, n_cols) in enumerate(original_grids)
+            ]
+            plot1(
+                profiling_results, repeats
+            )  # how do i make this only run with the flags ######
+            plot2(profiling_results, repeats)
 
-    print("====================================")
-    print("Test script complete, Total points: %d" % points)
+        print("====================================")
+        print("Test script complete, Total points: %d" % points)
 
 
 if __name__ == "__main__":
