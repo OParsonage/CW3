@@ -492,7 +492,7 @@ def plot2(results):
     plt.style.use("ggplot")
     fig, ax = plt.subplots(figsize=(10, 5))
     ax.set_title("Time taken to solve Sudoku puzzles")
-    ax.set_xlabel("Difficulty")
+    ax.set_xlabel("Number of missing values")
     ax.set_ylabel("Time taken (s)")
     ax.set_xticks(range(0, 81, 5))
     ax.set_yticks(np.arange(0, 2.5, 0.25))
@@ -504,7 +504,7 @@ def plot2(results):
     grid_number = 0
     for grid in results: # we plot the results for each grid
         grid_number += 1
-        difficulty = grid['Number of missing values'] # we get the difficulty of the grid
+        difficulty = grid['difficulty'] # we get the difficulty of the grid
         average_time = np.mean(grid['results']) # we calculate the average time taken to solve the grid
         std_dev = np.std(grid['results']) # we calculate the standard deviation of the time taken to solve the grid
 
