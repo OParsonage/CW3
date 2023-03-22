@@ -334,26 +334,13 @@ STMT = """
 profile_solve(grid, n_rows, n_cols)
 """
 
-def solve(grid, n_rows, n_cols):
-    original_grid = copy.deepcopy(grid) # we create a copy of the grid to compare with the solved grid
-    if args.profile: # if we want to profile the code
-        difficulty = sum(row.count(0) for row in grid) 	# we calculate the difficulty of the grid
-        results = timeit.repeat(
-            stmt=STMT,
-            setup=SETUP,
-            repeat=100,
-            number=1,
-            globals={
-                "grid": grid,
-                "n_rows": n_cols,
-                "n_cols": n_rows,
-                "create_priority": create_priority,
-                "recursive_solve": recursive_solve,
-            },
-        )
-        print(
-            f"Results for difficulty: {difficulty}, grid size: {n_cols}x{n_rows} are: {results}"
-        )
+def solve(grid, n_rows, n_cols, args):
+    """
+    Solve function for Sudoku coursework.
+    Comment out one of the lines below to either use the random or recursive solver
+    """
+
+    original_grid = copy.deepcopy(grid)
     priority_array, valid_array = create_priority(grid, n_rows, n_cols)
     solved_grid = recursive_solve(grid, n_rows, n_cols, priority_array)
     if args.explain:
@@ -386,15 +373,7 @@ def solve(grid, n_rows, n_cols):
                         output.write(
                             f"Put {element[0]} in location ({row_number}, {element[1]})\n"
                         )
-    if args.profile:
-        return solved_grid, {
-            "difficulty": difficulty,
-            "n_rows": n_rows,
-            "n_cols": n_cols,
-            "results": results,
-        }
-    else:
-        return solved_grid, None
+    return solved_grid
 
 def plot(results):
     import matplotlib.pyplot as plt
@@ -549,7 +528,30 @@ import numpy as np
 from scipy.stats import linregress
 
 
-def plot1(results):
+def profiling(grid, n_cols, n_rows, repeat):
+    difficulty = sum(row.count(0) for row in grid)
+    results = timeit.repeat(
+        stmt=STMT,
+        setup=SETUP,
+        repeat=repeat,
+        number=1,
+        globals={
+            "grid": grid,
+            "n_rows": n_cols,
+            "n_cols": n_rows,
+            "create_priority": create_priority,
+            "recursive_solve": recursive_solve,
+        },
+    )
+    return {
+        "difficulty": difficulty,
+        "n_rows": n_rows,
+        "n_cols": n_cols,
+        "results": results,
+    }
+
+
+def plot1(results, repeats):
     plt.style.use("ggplot")
     fig, ax = plt.subplots(figsize=(10, 5))
     ax.set_title("Time taken to solve Sudoku puzzles")
@@ -593,7 +595,7 @@ def plot1(results):
     fig.text(
         0.5,
         0.001,
-        "Data based on 18 Sudoku puzzles solved 7 times each using a recursive algorithm",
+        f"Data based on 18 Sudoku puzzles solved {repeats} times each using a recursive algorithm",
         ha="center",
         fontsize=12,
     )
@@ -611,7 +613,7 @@ def plot1(results):
 # creating a similar plot using a scatter graph
 
 
-def plot2(results):
+def plot2(results, repeats):
     plt.style.use("ggplot")
     fig, ax = plt.subplots(figsize=(10, 5))
     ax.set_title("Time taken to solve Sudoku puzzles")
@@ -669,7 +671,7 @@ def plot2(results):
     fig.text(
         0.5,
         0.001,
-        "Data based on 18 Sudoku puzzles solved 7 times each using a recursive algorithm",
+        f"Data based on 18 Sudoku puzzles solved {repeats} times each using a recursive algorithm",
         ha="center",
         fontsize=12,
     )
@@ -701,7 +703,7 @@ def _main():
             grid = [[int(value) for value in lst] for lst in list(reader)]
         grids = [(grid, *dims[str(len(grid))])]
     else:
-        grids = [
+        original_grids = [
             (grid1, 2, 2),
             (grid2, 2, 2),
             (grid3, 2, 2),
@@ -721,29 +723,35 @@ def _main():
             (grid17, 3, 3),
             (grid18, 3, 3),
         ]
+        grids = copy.deepcopy(original_grids)
     print("Running test script for coursework 1")
     print("====================================")
-    profiling_results = []
+    # profiling_results = []
     for i, (grid, n_rows, n_cols) in enumerate(grids):
         print("Solving grid: %d" % (i + 1))
         start_time = time.time()
         solution = solve(grid, n_rows, n_cols, args)
-        profiling_results.append(solution[1])
+        # profiling_results.append(solution[1])
         elapsed_time = time.time() - start_time
         print("Solved in: %f seconds" % elapsed_time)
-        for line in solution[0]:
+        for line in solution:
             print(line)
-        if check_solution(solution[0], n_rows, n_cols):
+        if check_solution(solution, n_rows, n_cols):
             print("grid %d correct" % (i + 1))
             points = points + 10
         else:
             print("grid %d incorrect" % (i + 1))
     # print(profiling_results)
     if args.profile:
+        repeats = 10
+        profiling_results = [
+            profiling(grid, n_rows, n_cols, repeats)
+            for _, (grid, n_rows, n_cols) in enumerate(original_grids)
+        ]
         plot1(
-            profiling_results
+            profiling_results, repeats
         )  # how do i make this only run with the flags ######
-        plot2(profiling_results)
+        plot2(profiling_results, repeats)
 
     print("====================================")
     print("Test script complete, Total points: %d" % points)
