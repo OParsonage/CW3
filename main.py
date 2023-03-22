@@ -739,10 +739,11 @@ def _main():
         else:
             print("grid %d incorrect" % (i + 1))
     # print(profiling_results)
-    plot1(
-        profiling_results
-    )  # how do i make this only run with the flags ######
-    plot2(profiling_results)
+    if args.profile:
+        plot1(
+            profiling_results
+        )  # how do i make this only run with the flags ######
+        plot2(profiling_results)
 
     print("====================================")
     print("Test script complete, Total points: %d" % points)
