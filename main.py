@@ -416,10 +416,10 @@ def solve(grid, n_rows, n_cols, args):
         return solved_grid, None
 
 
-# creating a similar plot using a scatter graph
+# function to plot the results of the profiling as a bar chart
 
 
-def plot1(results):
+def barplot(results):
     plt.style.use("ggplot")
     fig, ax = plt.subplots(figsize=(10, 5))
     ax.set_title("Time taken to solve Sudoku puzzles")
@@ -430,7 +430,7 @@ def plot1(results):
     ax.grid(True)
 
     # Define color map for difficulty levels
-    cmap = plt.get_cmap("viridis")
+    cmap = plt.get_cmap("rainbow")
 
     grid_number = 0
     for grid in results:  # we plot the results for each grid
@@ -443,7 +443,7 @@ def plot1(results):
             grid["results"]
         )  # we calculate the standard deviation of the time taken to solve the grid
 
-        # Add error bars to bar plot
+        # Adding error bars to bar plot
         ax.bar(
             difficulty,
             average_time,
@@ -463,7 +463,7 @@ def plot1(results):
     fig.text(
         0.5,
         0.001,
-        "Data based on 18 Sudoku puzzles solved 7 times each using a recursive algorithm",
+        "Data based on 18 Sudoku puzzles solved 100 times each using a recursive algorithm",
         ha="center",
         fontsize=12,
     )
@@ -473,9 +473,27 @@ def plot1(results):
     cbar = fig.colorbar(sm, ax=ax, ticks=range(0, 81, 10), shrink=0.8)
     cbar.set_label("Difficulty", fontsize=12)
 
+    # Extract the x and y values from the results
+    x = np.array([grid["difficulty"] for grid in results])
+    y = np.array([np.mean(grid["results"]) for grid in results])
+
+    # Fit a logarithmic polynomial to the data
+    z = np.polyfit(np.log(x), np.log(y), 1)
+    f = np.poly1d(z)
+
+    # Plot the logarithmic line of best fit
+    ax.plot(
+        x,
+        np.exp(f(np.log(x))),
+        color="black",
+        linestyle="--",
+        label="Line of best fit (log-log)",
+    )
+
+    # Add legend
     plt.legend(bbox_to_anchor=(1.2, 1), loc="upper left")
     plt.tight_layout()
-    plt.show()
+    plt.show()  # we show the plot
 
 
 # creating a similar plot using a scatter graph
@@ -610,10 +628,8 @@ def _main():
             print("grid %d incorrect" % (i + 1))
     # print(profiling_results)
     if args.profile:
-        plot1(
-            profiling_results
-        )  # how do i make this only run with the flags ######
-        plot2(profiling_results)
+        barplot(profiling_results)
+        # plot2(profiling_results)
 
     print("====================================")
     print("Test script complete, Total points: %d" % points)
