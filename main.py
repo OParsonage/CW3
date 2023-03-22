@@ -413,6 +413,104 @@ def plot(results):
         plt.bar(difficulty, average_time, label=f"Grid {grid_number}: {grid['n_rows']}x{grid['n_cols']}", width=0.5)
     plt.legend(loc="upper right")
     plt.show()
+    
+import matplotlib.pyplot as plt
+import numpy as np
+from scipy.stats import linregress
+
+def plot1(results):
+    plt.style.use("ggplot")
+    fig, ax = plt.subplots(figsize=(10, 5))
+    ax.set_title("Time taken to solve Sudoku puzzles")
+    ax.set_xlabel("Number of missing values")
+    ax.set_ylabel("Time taken (s)")
+    ax.set_xticks(range(0, 81, 5))
+    ax.set_yticks(np.arange(0, 2.5, 0.25))
+    ax.grid(True)
+    
+    # Define color map for difficulty levels
+    cmap = plt.get_cmap("viridis")
+    
+    grid_number = 0
+    for grid in results: # we plot the results for each grid
+        grid_number += 1
+        difficulty = grid['difficulty'] # we get the difficulty of the grid
+        average_time = np.mean(grid['results']) # we calculate the average time taken to solve the grid
+        std_dev = np.std(grid['results']) # we calculate the standard deviation of the time taken to solve the grid
+        
+        # Add error bars to bar plot
+        ax.bar(difficulty, average_time, yerr=std_dev, capsize=5, 
+               color=cmap(difficulty/80), label=f"Grid {grid_number}: {grid['n_rows']}x{grid['n_cols']}")
+    
+    # Increase font size of axis labels
+    ax.tick_params(axis="both", labelsize=12)
+    
+    # Set y-axis to logarithmic scale
+    ax.set_yscale("log")
+    
+    # Add subtitle with additional information about the data
+    fig.text(0.5, 0.001, "Data based on 18 Sudoku puzzles solved 7 times each using a recursive algorithm", ha="center", fontsize=12)
+    
+    # Add color bar to indicate difficulty levels
+    sm = plt.cm.ScalarMappable(cmap=cmap, norm=plt.Normalize(vmin=0, vmax=80))
+    cbar = fig.colorbar(sm, ax=ax, ticks=range(0, 81, 10), shrink=0.8)
+    cbar.set_label("Difficulty", fontsize=12)
+    
+    plt.legend(bbox_to_anchor=(1.2, 1), loc='upper left')
+    plt.tight_layout()
+    plt.show()
+    
+# creating a similar plot using a scatter graph
+
+def plot2(results):
+
+    plt.style.use("ggplot")
+    fig, ax = plt.subplots(figsize=(10, 5))
+    ax.set_title("Time taken to solve Sudoku puzzles")
+    ax.set_xlabel("Difficulty")
+    ax.set_ylabel("Time taken (s)")
+    ax.set_xticks(range(0, 81, 5))
+    ax.set_yticks(np.arange(0, 2.5, 0.25))
+    ax.grid(True)
+
+    # Define color map for difficulty levels
+    cmap = plt.get_cmap("viridis")
+
+    grid_number = 0
+    for grid in results: # we plot the results for each grid
+        grid_number += 1
+        difficulty = grid['Number of missing values'] # we get the difficulty of the grid
+        average_time = np.mean(grid['results']) # we calculate the average time taken to solve the grid
+        std_dev = np.std(grid['results']) # we calculate the standard deviation of the time taken to solve the grid
+
+        # Add error bars to scatter plot
+        ax.errorbar(difficulty, average_time, yerr=std_dev, fmt='x', capsize=5, color=cmap(difficulty/80), label=f"Grid {grid_number}: {grid['n_rows']}x{grid['n_cols']}")
+    
+	 # Compute and plot line of best fit
+    x = [grid['difficulty'] for grid in results]
+    y = [np.mean(grid['results']) for grid in results]
+    slope, intercept, r_value, p_value, std_err = linregress(x, y)
+    ax.plot(x, slope*np.array(x)+intercept, color='black', label=f"Line of best fit: y={slope:.3f}x+{intercept:.3f}")
+
+    # Increase font size of axis labels
+    ax.tick_params(axis="both", labelsize=12)
+
+    # Set y-axis to logarithmic scale
+    ax.set_yscale("log") # does this need changing? ###### because the one poor result
+
+    # Add subtitle with additional information about the data
+    fig.text(0.5, 0.001, "Data based on 18 Sudoku puzzles solved 7 times each using a recursive algorithm", ha="center", fontsize=12)
+
+    # Add color bar to indicate difficulty levels
+    sm = plt.cm.ScalarMappable(cmap=cmap, norm=plt.Normalize(vmin=0, vmax=80))
+    cbar = fig.colorbar(sm, ax=ax, ticks=range(0, 81, 10), shrink=0.8)
+    cbar.set_label("Difficulty", fontsize=12)
+
+    plt.legend(bbox_to_anchor=(1.2, 1), loc='upper left')
+    plt.tight_layout()
+    plt.show()
+    
+
 
 def plot(results):
     import matplotlib.pyplot as plt
