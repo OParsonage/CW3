@@ -374,32 +374,10 @@ def explain(original_grid, solved_grid, to_terminal):
                 )
     return changes
 
-def plot(results):
-    import matplotlib.pyplot as plt
+# function to plot the results of the profiling as a bar chart
 
-    plt.style.use("ggplot")
-    plt.figure(figsize=(10, 5))
-    plt.title("Time taken to solve Sudoku grids")
-    plt.xlabel("Difficulty")
-    plt.ylabel("Time taken (s)")
-    plt.xticks(range(0, 81, 5))
-    plt.yticks(range(0, 2))
-    plt.grid(True)
-    grid_number = 0
-    for grid in results: # we plot the results for each grid
-        grid_number += 1
-        difficulty = grid['difficulty'] # we get the difficulty of the grid
-        average_time = sum(grid['results']) / len(grid['results']) # we calculate the average time taken to solve the grid
-        print(difficulty, average_time)            
-        plt.bar(difficulty, average_time, label=f"Grid {grid_number}: {grid['n_rows']}x{grid['n_cols']}", width=0.5)
-    plt.legend(loc="upper right")
-    plt.show()
-    
-import matplotlib.pyplot as plt
-import numpy as np
-from scipy.stats import linregress
 
-def plot1(results):
+def barplot(results):
     plt.style.use("ggplot")
     fig, ax = plt.subplots(figsize=(10, 5))
     ax.set_title("Time taken to solve Sudoku puzzles")
@@ -485,7 +463,7 @@ def plot2(results):
     ax.grid(True)
 
     # Define color map for difficulty levels
-    cmap = plt.get_cmap("viridis")
+    cmap = plt.get_cmap("rainbow")
 
     grid_number = 0
     for grid in results: # we plot the results for each grid
