@@ -406,24 +406,25 @@ def solve(grid, n_rows, n_cols, args):
         return solved_grid, None
 
 def plot(results):
-	import matplotlib.pyplot as plt
-    
+    import matplotlib.pyplot as plt
 
-	plt.style.use("ggplot")
-	plt.figure(figsize=(10, 5))
-	plt.title("Time taken to solve Sudoku grids")
-	plt.xlabel("Difficulty")
-	plt.ylabel("Time taken (s)")
-	plt.xticks(range(0, 81, 5))
-	plt.yticks(range(0, 2))
-	plt.grid(True)
-	for grid in results: # we plot the results for each grid
-		difficulty = grid['difficulty'] # we get the difficulty of the grid
-		average_time = sum(grid['results']) / len(grid['results']) # we calculate the average time taken to solve the grid
-		print(difficulty, average_time)            
-		plt.bar(difficulty, average_time, label=f"{grid['n_rows']}x{grid['n_cols']}")
-	plt.legend()
-	plt.show()
+    plt.style.use("ggplot")
+    plt.figure(figsize=(10, 5))
+    plt.title("Time taken to solve Sudoku grids")
+    plt.xlabel("Difficulty")
+    plt.ylabel("Time taken (s)")
+    plt.xticks(range(0, 81, 5))
+    plt.yticks(range(0, 2))
+    plt.grid(True)
+    grid_number = 0
+    for grid in results: # we plot the results for each grid
+        grid_number += 1
+        difficulty = grid['difficulty'] # we get the difficulty of the grid
+        average_time = sum(grid['results']) / len(grid['results']) # we calculate the average time taken to solve the grid
+        print(difficulty, average_time)            
+        plt.bar(difficulty, average_time, label=f"Grid {grid_number}: {grid['n_rows']}x{grid['n_cols']}", width=0.5)
+    plt.legend(loc="upper right")
+    plt.show()
 
 """
 ===================================
