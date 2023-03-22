@@ -418,7 +418,7 @@ def hint(hints, solved_grid, original_grid, n_rows, n_cols):
     return grid_to_show
 
 
-# creating a similar plot using a scatter graph
+# function to plot the results of the profiling as a bar chart
 
 
 def profiling(grid, n_cols, n_rows, repeat):
@@ -449,7 +449,7 @@ solved_grid = recursive_solve(grid_to_test, n_rows, n_cols, priority_array)
     return ProfileResults(difficulty, n_rows, n_cols, results)
 
 
-def plot1(results, repeats):
+def barplot(results, repeats):
     plt.style.use("ggplot")
     fig, ax = plt.subplots(figsize=(10, 5))
     ax.set_title("Time taken to solve Sudoku puzzles")
@@ -460,7 +460,7 @@ def plot1(results, repeats):
     ax.grid(True)
 
     # Define color map for difficulty levels
-    cmap = plt.get_cmap("viridis")
+    cmap = plt.get_cmap("rainbow")
 
     grid_number = 0
     for grid in results:  # we plot the results for each grid
@@ -473,7 +473,7 @@ def plot1(results, repeats):
             grid.timeit_results
         )  # we calculate the standard deviation of the time taken to solve the grid
 
-        # Add error bars to bar plot
+        # Adding error bars to bar plot
         ax.bar(
             difficulty,
             average_time,
@@ -503,9 +503,27 @@ def plot1(results, repeats):
     cbar = fig.colorbar(sm, ax=ax, ticks=range(0, 81, 10), shrink=0.8)
     cbar.set_label("Difficulty", fontsize=12)
 
+    # Extract the x and y values from the results
+    x = np.array([grid.difficulty for grid in results])
+    y = np.array([np.mean(grid.timeit_results) for grid in results])
+
+    # Fit a logarithmic polynomial to the data
+    z = np.polyfit(np.log(x), np.log(y), 1)
+    f = np.poly1d(z)
+
+    # Plot the logarithmic line of best fit
+    ax.plot(
+        x,
+        np.exp(f(np.log(x))),
+        color="black",
+        linestyle="--",
+        label="Line of best fit (log-log)",
+    )
+
+    # Add legend
     plt.legend(bbox_to_anchor=(1.2, 1), loc="upper left")
     plt.tight_layout()
-    plt.show()
+    plt.show()  # we show the plot
 
 
 # creating a similar plot using a scatter graph
@@ -670,8 +688,7 @@ def _main():
                 profiling(grid, n_rows, n_cols, repeats)
                 for _, (grid, n_rows, n_cols) in enumerate(original_grids)
             ]
-            plot1(profiling_results, repeats)
-            plot2(profiling_results, repeats)
+            barplot(profiling_results, repeats)
 
         print("====================================")
         print("Test script complete, Total points: %d" % points)
