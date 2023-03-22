@@ -3,6 +3,9 @@ import csv
 import argparse
 import copy
 import timeit
+import matplotlib.pyplot as plt
+import numpy as np
+from scipy.stats import linregress
 
 # Grids 1-5 are 2x2
 grid1 = [[1, 0, 4, 2], [4, 2, 1, 3], [2, 1, 3, 4], [3, 4, 2, 1]]
