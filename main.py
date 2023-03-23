@@ -451,7 +451,7 @@ def hint(hints, solved_grid, original_grid, n_rows, n_cols):
     valid_perms = [
         perm for perm in perms if original_grid[perm[0]][perm[1]] == 0
     ]
-    if hints > n_rows * n_cols:
+    if hints > sum(row.count(0) for row in original_grid):
         raise TooManyHintsError
     chosen_hints = random.sample(valid_perms, hints)
     grid_to_show = copy.deepcopy(original_grid)
@@ -727,8 +727,19 @@ def _main():
             solution = solve(
                 copy.deepcopy(grid_input), *dims[str(len(grid_input))]
             )
-        # if args.hint:
-
+        if args.hint:
+            try:
+                solution = hint(
+                    int(args.hint),
+                    solution,
+                    grid_input,
+                    *dims[str(len(grid_input))],
+                )
+            except TooManyHintsError:
+                print(
+                    f"Error, number of hints requested is greater than the number of zeroes present in grid"
+                )
+                sys.exit(1)
         if args.explain:
             changes = explain(grid_input, solution, False)
         else:
