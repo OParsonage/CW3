@@ -9,6 +9,7 @@ from scipy.stats import linregress
 import random
 import itertools
 import sys
+from dataclasses import dataclass
 
 # Grids 1-5 are 2x2
 grid1 = [[1, 0, 4, 2], [4, 2, 1, 3], [2, 1, 3, 4], [3, 4, 2, 1]]
@@ -150,6 +151,16 @@ class TooManyHintsError(Exception):
     """Raised when user asks for more hints than there are zeroes in Sudoku grid"""
 
     pass
+
+
+@dataclass
+class ProfileResults:
+    """Class for storing parameters to plot profiling results"""
+
+    difficulty: int
+    n_rows: int
+    n_cols: int
+    timeit_results: list
 
 
 def _getArgs():
@@ -435,12 +446,7 @@ solved_grid = recursive_solve(grid_to_test, n_rows, n_cols, priority_array)
             "recursive_solve": recursive_solve,
         },
     )
-    return {
-        "difficulty": difficulty,
-        "n_rows": n_rows,
-        "n_cols": n_cols,
-        "results": results,
-    }
+    return ProfileResults(difficulty, n_rows, n_cols, results)
 
 
 def plot1(results, repeats):
@@ -459,12 +465,12 @@ def plot1(results, repeats):
     grid_number = 0
     for grid in results:  # we plot the results for each grid
         grid_number += 1
-        difficulty = grid["difficulty"]  # we get the difficulty of the grid
+        difficulty = grid.difficulty  # we get the difficulty of the grid
         average_time = np.mean(
-            grid["results"]
+            grid.timeit_results
         )  # we calculate the average time taken to solve the grid
         std_dev = np.std(
-            grid["results"]
+            grid.timeit_results
         )  # we calculate the standard deviation of the time taken to solve the grid
 
         # Add error bars to bar plot
@@ -474,7 +480,7 @@ def plot1(results, repeats):
             yerr=std_dev,
             capsize=5,
             color=cmap(difficulty / 80),
-            label=f"Grid {grid_number}: {grid['n_rows']}x{grid['n_cols']}",
+            label=f"Grid {grid_number}: {grid.n_rows}x{grid.n_cols}",
         )
 
     # Increase font size of axis labels
@@ -518,15 +524,15 @@ def plot2(results, repeats):
     # Define color map for difficulty levels
     cmap = plt.get_cmap("viridis")
 
-    grid_number = 0
+    grid_number = 0  # TODO Remove this and use enumerate
     for grid in results:  # we plot the results for each grid
         grid_number += 1
-        difficulty = grid["difficulty"]  # we get the difficulty of the grid
+        difficulty = grid.difficulty  # we get the difficulty of the grid
         average_time = np.mean(
-            grid["results"]
+            grid.timeit_results
         )  # we calculate the average time taken to solve the grid
         std_dev = np.std(
-            grid["results"]
+            grid.timeit_results
         )  # we calculate the standard deviation of the time taken to solve the grid
 
         # Add error bars to scatter plot
@@ -537,12 +543,12 @@ def plot2(results, repeats):
             fmt="x",
             capsize=5,
             color=cmap(difficulty / 80),
-            label=f"Grid {grid_number}: {grid['n_rows']}x{grid['n_cols']}",
+            label=f"Grid {grid_number}: {grid.n_rows}x{grid.n_cols}",
         )
 
     # Compute and plot line of best fit
-    x = [grid["difficulty"] for grid in results]
-    y = [np.mean(grid["results"]) for grid in results]
+    x = [grid.difficulty for grid in results]
+    y = [np.mean(grid.timeit_results) for grid in results]
     slope, intercept, r_value, p_value, std_err = linregress(x, y)
     ax.plot(
         x,
