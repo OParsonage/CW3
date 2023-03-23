@@ -6,6 +6,9 @@ import timeit
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.stats import linregress
+import random
+import itertools
+import sys
 
 # Grids 1-5 are 2x2
 grid1 = [[1, 0, 4, 2], [4, 2, 1, 3], [2, 1, 3, 4], [3, 4, 2, 1]]
@@ -141,6 +144,12 @@ grids = [
     (grid17, 3, 3),
     (grid18, 3, 3),
 ]
+
+
+class TooManyHintsError(Exception):
+    """Raised when user asks for more hints than there are zeroes in Sudoku grid"""
+
+    pass
 
 
 def _getArgs():
@@ -436,6 +445,21 @@ def to_file(args, solved_grid, changes):
                     )
 
 
+def hint(hints, solved_grid, original_grid, n_rows, n_cols):
+    ranges = [range(0, n_rows * n_cols) for i in range(2)]
+    perms = list(itertools.product(*ranges))
+    valid_perms = [
+        perm for perm in perms if original_grid[perm[0]][perm[1]] == 0
+    ]
+    if hints > n_rows * n_cols:
+        raise TooManyHintsError
+    chosen_hints = random.sample(valid_perms, hints)
+    grid_to_show = copy.deepcopy(original_grid)
+    for perm in chosen_hints:
+        grid_to_show[perm[0]][perm[1]] = solved_grid[perm[0]][perm[1]]
+    return grid_to_show
+
+
 # creating a similar plot using a scatter graph
 
 def plot2(results):
@@ -703,6 +727,8 @@ def _main():
             solution = solve(
                 copy.deepcopy(grid_input), *dims[str(len(grid_input))]
             )
+        # if args.hint:
+
         if args.explain:
             changes = explain(grid_input, solution, False)
         else:
@@ -738,6 +764,16 @@ def _main():
             solution = solve(grid, n_rows, n_cols)
             elapsed_time = time.time() - start_time
             print("Solved in: %f seconds" % elapsed_time)
+            if args.hint:
+                try:
+                    solution = hint(
+                        int(args.hint), solution, *original_grids[i]
+                    )
+                except TooManyHintsError:
+                    print(
+                        f"Error, number of hints requested is greater than the number of zeroes present in grid {i+1}"
+                    )
+                    sys.exit(1)
             for line in solution:
                 print(line)
             if check_solution(solution, n_rows, n_cols):
