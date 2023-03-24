@@ -245,23 +245,35 @@ def check_solution(grid, n_rows, n_cols):
 
 # function to solve the sudoku board
 def recursive_solve(grid, n_rows, n_cols, priority_array):
-	'''A recursive function to both enter and test possible values in the grid
-	Inputs:
-	grid: initial grid to solve
-	n_rows: number of boxes horizontally
-	n_cols: number of boxes vertically'''
-	#N is the maximum integer considered in this board
-	if priority_array:
-		row = priority_array[0][0]
-		column = priority_array[0][1]
-		for value in priority_array[0][2]: # k is the number we are trying to put in the cell
-			if valid(grid, row, column, value, n_rows, n_cols): # test that the value entered could be part of a valid solution
-				grid[row][column] = value # we put k in the cell
-				recursive_solve(grid, n_rows, n_cols, priority_array[1:]) # we call the function recursively
-				if check_solution(grid, n_rows, n_cols): # if the grid is correct, we return it
-					return(grid)
-		grid[row][column] = 0 # if we have tried all the numbers and none of them work, we return the grid to its original state
-	return(grid)
+    """A recursive function to both enter and test possible values in the grid
+    Inputs:
+    grid: initial grid to solve
+    n_rows: number of boxes horizontally
+    n_cols: number of boxes vertically"""
+    # N is the maximum integer considered in this board
+    if priority_array:
+        row = priority_array[0][0]
+        column = priority_array[0][1]
+        for value in priority_array[0][
+            2
+        ]:  # k is the number we are trying to put in the cell
+            if valid(
+                grid, row, column, value, n_rows, n_cols
+            ):  # test that the value entered could be part of a valid solution
+                grid[row][column] = value  # we put k in the cell
+                recursive_solve(
+                    grid, n_rows, n_cols, priority_array[1:]
+                )  # we call the function recursively
+                if check_solution(
+                    grid, n_rows, n_cols
+                ):  # if the grid is correct, we return it
+                    return grid
+        grid[row][
+            column
+        ] = 0  # if we have tried all the numbers and none of them work, we return the grid to its original state
+    return grid
+
+
 # we return the grid if it is already solved
 
 
@@ -374,6 +386,7 @@ def explain(original_grid, solved_grid, to_terminal):
                 )
     return changes
 
+
 # function to plot the results of the profiling as a bar chart
 
 
@@ -386,39 +399,56 @@ def barplot(results):
     ax.set_xticks(range(0, 81, 5))
     ax.set_yticks(np.arange(0, 2.5, 0.25))
     ax.grid(True)
-    
+
     # Define color map for difficulty levels
     cmap = plt.get_cmap("viridis")
-    
+
     grid_number = 0
-    for grid in results: # we plot the results for each grid
+    for grid in results:  # we plot the results for each grid
         grid_number += 1
-        difficulty = grid['difficulty'] # we get the difficulty of the grid
-        average_time = np.mean(grid['results']) # we calculate the average time taken to solve the grid
-        std_dev = np.std(grid['results']) # we calculate the standard deviation of the time taken to solve the grid
-        
+        difficulty = grid["difficulty"]  # we get the difficulty of the grid
+        average_time = np.mean(
+            grid["results"]
+        )  # we calculate the average time taken to solve the grid
+        std_dev = np.std(
+            grid["results"]
+        )  # we calculate the standard deviation of the time taken to solve the grid
+
         # Add error bars to bar plot
-        ax.bar(difficulty, average_time, yerr=std_dev, capsize=5, 
-               color=cmap(difficulty/80), label=f"Grid {grid_number}: {grid['n_rows']}x{grid['n_cols']}")
-    
+        ax.bar(
+            difficulty,
+            average_time,
+            yerr=std_dev,
+            capsize=5,
+            color=cmap(difficulty / 80),
+            label=f"Grid {grid_number}: {grid['n_rows']}x{grid['n_cols']}",
+        )
+
     # Increase font size of axis labels
     ax.tick_params(axis="both", labelsize=12)
-    
+
     # Set y-axis to logarithmic scale
     ax.set_yscale("log")
-    
+
     # Add subtitle with additional information about the data
-    fig.text(0.5, 0.001, "Data based on 18 Sudoku puzzles solved 7 times each using a recursive algorithm", ha="center", fontsize=12)
-    
+    fig.text(
+        0.5,
+        0.001,
+        "Data based on 18 Sudoku puzzles solved 7 times each using a recursive algorithm",
+        ha="center",
+        fontsize=12,
+    )
+
     # Add color bar to indicate difficulty levels
     sm = plt.cm.ScalarMappable(cmap=cmap, norm=plt.Normalize(vmin=0, vmax=80))
     cbar = fig.colorbar(sm, ax=ax, ticks=range(0, 81, 10), shrink=0.8)
     cbar.set_label("Difficulty", fontsize=12)
-    
-    plt.legend(bbox_to_anchor=(1.2, 1), loc='upper left')
+
+    plt.legend(bbox_to_anchor=(1.2, 1), loc="upper left")
     plt.tight_layout()
     plt.show()
-    
+
+
 def to_file(args, solved_grid, changes):
     with open(args.file[1], "w") as output:
         output.write("Solved Grid:\n")
@@ -450,92 +480,6 @@ def hint(hints, solved_grid, original_grid, n_rows, n_cols):
 
 
 # function to plot the results of the profiling as a bar chart
-
-def plot2(results):
-
-    plt.style.use("ggplot")
-    fig, ax = plt.subplots(figsize=(10, 5))
-    ax.set_title("Time taken to solve Sudoku puzzles")
-    ax.set_xlabel("Number of missing values")
-    ax.set_ylabel("Time taken (s)")
-    ax.set_xticks(range(0, 81, 5))
-    ax.set_yticks(np.arange(0, 2.5, 0.25))
-    ax.grid(True)
-
-    # Define color map for difficulty levels
-    cmap = plt.get_cmap("rainbow")
-
-    # sorting the grids by difficulty
-    results.sort(key=lambda x: x["difficulty"])
-
-    grid_number = 0
-    for grid in results: # we plot the results for each grid
-        grid_number += 1
-        difficulty = grid['difficulty'] # we get the difficulty of the grid
-        average_time = np.mean(grid['results']) # we calculate the average time taken to solve the grid
-        std_dev = np.std(grid['results']) # we calculate the standard deviation of the time taken to solve the grid
-
-        # Add error bars to scatter plot
-        ax.errorbar(difficulty, average_time, yerr=std_dev, fmt='x', capsize=5, color=cmap(difficulty/80), label=f"Grid {grid_number}: {grid['n_rows']}x{grid['n_cols']}")
-    
-	 # Compute and plot line of best fit
-    x = [grid['difficulty'] for grid in results]
-    y = [np.mean(grid['results']) for grid in results]
-    slope, intercept, r_value, p_value, std_err = linregress(x, y)
-    ax.plot(x, slope*np.array(x)+intercept, color='black', label=f"Line of best fit: y={slope:.3f}x+{intercept:.3f}")
-
-    # Increase font size of axis labels
-    ax.tick_params(axis="both", labelsize=12)
-
-    # Set y-axis to logarithmic scale
-    ax.set_yscale("log") # does this need changing? ###### because the one poor result
-
-    # Add subtitle with additional information about the data
-    fig.text(0.5, 0.001, "Data based on 18 Sudoku puzzles solved 7 times each using a recursive algorithm", ha="center", fontsize=12)
-
-    # Add color bar to indicate difficulty levels
-    sm = plt.cm.ScalarMappable(cmap=cmap, norm=plt.Normalize(vmin=0, vmax=80))
-    cbar = fig.colorbar(sm, ax=ax, ticks=range(0, 81, 10), shrink=0.8)
-    cbar.set_label("Difficulty", fontsize=12)
-
-    plt.legend(bbox_to_anchor=(1.2, 1), loc='upper left')
-    plt.tight_layout()
-    plt.show()
-    
-
-
-def plot(results):
-    import matplotlib.pyplot as plt
-
-    plt.style.use("ggplot")
-    plt.figure(figsize=(10, 5))
-    plt.title("Time taken to solve Sudoku grids")
-    plt.xlabel("Difficulty")
-    plt.ylabel("Time taken (s)")
-    plt.xticks(range(0, 81, 5))
-    plt.yticks(range(0, 2))
-    plt.grid(True)
-    grid_number = 0
-    for grid in results:  # we plot the results for each grid
-        grid_number += 1
-        difficulty = grid["difficulty"]  # we get the difficulty of the grid
-        average_time = sum(grid["results"]) / len(
-            grid["results"]
-        )  # we calculate the average time taken to solve the grid
-        print(difficulty, average_time)
-        plt.bar(
-            difficulty,
-            average_time,
-            label=f"Grid {grid_number}: {grid['n_rows']}x{grid['n_cols']}",
-            width=0.5,
-        )
-    plt.legend(loc="upper right")
-    plt.show()
-
-
-import matplotlib.pyplot as plt
-import numpy as np
-from scipy.stats import linregress
 
 
 def profiling(grid, n_cols, n_rows, repeat):
