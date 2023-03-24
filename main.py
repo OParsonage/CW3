@@ -418,7 +418,7 @@ def hint(hints, solved_grid, original_grid, n_rows, n_cols):
     return grid_to_show
 
 
-# creating a similar plot using a scatter graph
+# function to plot the results of the profiling as a bar chart
 
 
 def profiling(grid, n_cols, n_rows, repeat):
@@ -449,7 +449,7 @@ solved_grid = recursive_solve(grid_to_test, n_rows, n_cols, priority_array)
     return ProfileResults(difficulty, n_rows, n_cols, results)
 
 
-def plot1(results, repeats):
+def barplot(results, repeats):
     plt.style.use("ggplot")
     fig, ax = plt.subplots(figsize=(10, 5))
     ax.set_title("Time taken to solve Sudoku puzzles")
@@ -460,7 +460,10 @@ def plot1(results, repeats):
     ax.grid(True)
 
     # Define color map for difficulty levels
-    cmap = plt.get_cmap("viridis")
+    cmap = plt.get_cmap("rainbow")
+
+    # sorting the grids by difficulty
+    results.sort(key=lambda x: x.difficulty)
 
     grid_number = 0
     for grid in results:  # we plot the results for each grid
@@ -473,7 +476,7 @@ def plot1(results, repeats):
             grid.timeit_results
         )  # we calculate the standard deviation of the time taken to solve the grid
 
-        # Add error bars to bar plot
+        # Adding error bars to bar plot
         ax.bar(
             difficulty,
             average_time,
@@ -503,85 +506,37 @@ def plot1(results, repeats):
     cbar = fig.colorbar(sm, ax=ax, ticks=range(0, 81, 10), shrink=0.8)
     cbar.set_label("Difficulty", fontsize=12)
 
-    plt.legend(bbox_to_anchor=(1.2, 1), loc="upper left")
-    plt.tight_layout()
-    plt.show()
+    # Extract the x and y values from the results
+    x = np.array([grid.difficulty for grid in results])
+    y = np.array([np.mean(grid.timeit_results) for grid in results])
 
+    # sorting x and y values by ascending y values
+    x = x[np.argsort(x)]
+    y = y[np.argsort(x)]
 
-# creating a similar plot using a scatter graph
+    # Fit a logarithmic polynomial to the data
+    z = np.polyfit(np.log(x), np.log(y), 1)
+    f = np.poly1d(z)
 
-
-def plot2(results, repeats):
-    plt.style.use("ggplot")
-    fig, ax = plt.subplots(figsize=(10, 5))
-    ax.set_title("Time taken to solve Sudoku puzzles")
-    ax.set_xlabel("Number of missing values")
-    ax.set_ylabel("Time taken (s)")
-    ax.set_xticks(range(0, 81, 5))
-    ax.set_yticks(np.arange(0, 2.5, 0.25))
-    ax.grid(True)
-
-    # Define color map for difficulty levels
-    cmap = plt.get_cmap("viridis")
-
-    grid_number = 0  # TODO Remove this and use enumerate
-    for grid in results:  # we plot the results for each grid
-        grid_number += 1
-        difficulty = grid.difficulty  # we get the difficulty of the grid
-        average_time = np.mean(
-            grid.timeit_results
-        )  # we calculate the average time taken to solve the grid
-        std_dev = np.std(
-            grid.timeit_results
-        )  # we calculate the standard deviation of the time taken to solve the grid
-
-        # Add error bars to scatter plot
-        ax.errorbar(
-            difficulty,
-            average_time,
-            yerr=std_dev,
-            fmt="x",
-            capsize=5,
-            color=cmap(difficulty / 80),
-            label=f"Grid {grid_number}: {grid.n_rows}x{grid.n_cols}",
-        )
-
-    # Compute and plot line of best fit
-    x = [grid.difficulty for grid in results]
-    y = [np.mean(grid.timeit_results) for grid in results]
-    slope, intercept, r_value, p_value, std_err = linregress(x, y)
+    # Plot the logarithmic line of best fit
     ax.plot(
         x,
-        slope * np.array(x) + intercept,
+        np.exp(f(np.log(x))),
         color="black",
-        label=f"Line of best fit: y={slope:.3f}x+{intercept:.3f}",
+        linestyle="--",
+        label="Line of best fit (log-log)",
     )
-
-    # Increase font size of axis labels
-    ax.tick_params(axis="both", labelsize=12)
-
-    # Set y-axis to logarithmic scale
-    ax.set_yscale(
-        "log"
-    )  # does this need changing? ###### because the one poor result
-
-    # Add subtitle with additional information about the data
-    fig.text(
-        0.5,
-        0.001,
-        f"Data based on 18 Sudoku puzzles solved {repeats} times each using a recursive algorithm",
-        ha="center",
-        fontsize=12,
-    )
-
-    # Add color bar to indicate difficulty levels
-    sm = plt.cm.ScalarMappable(cmap=cmap, norm=plt.Normalize(vmin=0, vmax=80))
-    cbar = fig.colorbar(sm, ax=ax, ticks=range(0, 81, 10), shrink=0.8)
-    cbar.set_label("Difficulty", fontsize=12)
-
+    # Add legend
     plt.legend(bbox_to_anchor=(1.2, 1), loc="upper left")
     plt.tight_layout()
-    plt.show()
+    plt.show()  # we show the plot
+
+
+"""
+===================================
+DO NOT CHANGE CODE BELOW THIS LINE
+===================================
+"""
 
 
 def _main():
@@ -670,8 +625,7 @@ def _main():
                 profiling(grid, n_rows, n_cols, repeats)
                 for _, (grid, n_rows, n_cols) in enumerate(original_grids)
             ]
-            plot1(profiling_results, repeats)
-            plot2(profiling_results, repeats)
+            barplot(profiling_results, repeats)
 
         print("====================================")
         print("Test script complete, Total points: %d" % points)
