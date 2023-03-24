@@ -680,10 +680,11 @@ def _main():
             if check_solution(solution, n_rows, n_cols):
                 print("grid %d correct" % (i + 1))
                 points = points + 10
-                if args.explain:
-                    explain(original_grids[i][0], solution, True)
+
             else:
                 print("grid %d incorrect" % (i + 1))
+            if args.explain:
+                explain(original_grids[i][0], solution, True)
         if args.profile:
             repeats = 10
             profiling_results = [
