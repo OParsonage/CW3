@@ -52,9 +52,9 @@ grid7 = [
         [2, 0, 6, 0, 3, 0, 7, 0, 0]
 	    ]
 
-#grids = [(grid1, 2, 2), (grid2, 2, 2), (grid3, 2, 2), (grid4, 2, 2), (grid5, 2, 2), (grid6, 2, 3)]
-#grids = [(grid1, 2, 2)]
-grids = [(grid7, 3, 3)]
+grids = [(grid1, 2, 2), (grid2, 2, 2), (grid3, 2, 2), (grid4, 2, 2), (grid5, 2, 2), (grid6, 2, 3), (grid7, 3, 3)]
+# grids = [(grid1, 2, 2)]
+# grids = [(grid7, 3, 3)]
 
 '''
 ===================================
