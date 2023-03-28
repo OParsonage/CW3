@@ -137,7 +137,7 @@ def priority_length(term):
 def to_tuple(lst):
     return tuple(to_tuple(i) if isinstance(i, list) else i for i in lst)
 
-def create_priority(grid, n_rows, n_cols, valid_array_old):
+def create_priority(grid, n_rows, n_cols):
 	'''Creates an array of the number of valid values & a separate array with empty values replaced with an array of all valid values
     Inputs: 
         grid: current grid to be solved
@@ -147,14 +147,16 @@ def create_priority(grid, n_rows, n_cols, valid_array_old):
         priority_array: array of coordinates in the format [row_no, col_no, possible_values_count]
 	    valid_array: array of original grid with all 0-values replaced with viable values'''
 	priority_array = []
-	valid_array = [valid_array_old]
+	valid_array = []
+	for line in grid:
+		valid_array.append(list(line))
 	n = n_rows*n_cols
 	for row in range(0, n): # i is the row
 		for column in range(0, n): # j is the column
 			if grid[row][column] == 0: # if the cell is empty
 				valid_array[row][column] = []
 				priority_array.append([row, column, []])
-				for value in valid_array_old[row][column]: # k is the number we are trying to put in the cell
+				for value in range(1, n+1): # k is the number we are trying to put in the cell
 					if valid(grid, row, column, value, n_rows, n_cols): # test that the value entered could be part of a valid solution
 						valid_array[row][column].append(value)
 						priority_array[-1][2].append(value)
@@ -203,7 +205,7 @@ def simplify(priority_array, valid_array, grid, n_rows, n_cols):
 			priority_array[index][2] = priority_array[index][2][0]
 			valid_array[priority_array[index][0]][priority_array[index][1]] = priority_array[index][2]
 			grid[priority_array[index][0]][priority_array[index][1]] = priority_array[index][2]
-	priority_array, valid_array = create_priority(grid, n_rows, n_cols, valid_array)
+	priority_array, valid_array = create_priority(grid, n_rows, n_cols)
 	return(priority_array, valid_array, grid)
 
 def solve(grid, n_rows, n_cols):
@@ -211,7 +213,7 @@ def solve(grid, n_rows, n_cols):
 	Solve function for Sudoku coursework.
 	Comment out one of the lines below to either use the random or recursive solver
 	'''
-	priority_array, valid_array = create_priority(grid, n_rows, n_cols, valid_array_init)
+	priority_array, valid_array = create_priority(grid, n_rows, n_cols)
 	#return random_solve(grid, n_rows, n_cols)
 	#return recursive_solve(grid, n_rows, n_cols, priority_array)
 	return wavefront_solve(grid, n_rows, n_cols, valid_array, priority_array)
