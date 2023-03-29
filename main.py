@@ -238,7 +238,7 @@ def solve(grid, n_rows, n_cols):
 	Comment out one of the lines below to either use the random or recursive solver
 	'''
 	valid_array_init = []
-	possible_values = [val for val in range(1,n_rows*n_cols+1)]
+	possible_values = list(range(1,n_rows*n_cols+1))
 	for row in range(0, len(grid)): # i is the row
 		valid_array_init.append([])
 		for column in range(0, len(grid)): # j is the column
