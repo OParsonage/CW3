@@ -65,9 +65,9 @@ grid8 = [
 		[0, 0, 0, 0, 0, 0, 0, 0, 0]
 		]
 
-#grids = [(grid1, 2, 2), (grid2, 2, 2), (grid3, 2, 2), (grid4, 2, 2), (grid5, 2, 2), (grid6, 2, 3)]
+grids = [(grid1, 2, 2), (grid2, 2, 2), (grid3, 2, 2), (grid4, 2, 2), (grid5, 2, 2), (grid6, 2, 3), (grid7, 3, 3), (grid8, 3, 3)]
 #grids = [(grid1, 2, 2)]
-grids = [(grid1, 2, 2)]
+#grids = [(grid1, 2, 2)]
 
 '''
 ===================================
@@ -238,11 +238,13 @@ def solve(grid, n_rows, n_cols):
 	Comment out one of the lines below to either use the random or recursive solver
 	'''
 	valid_array_init = []
+	possible_values = [val for val in range(1,n_rows*n_cols+1)]
 	for row in range(0, len(grid)): # i is the row
 		valid_array_init.append([])
 		for column in range(0, len(grid)): # j is the column
 			if grid[row][column] == 0: # if the cell is empty
-				valid_array_init[row].append([val for val in range(0,n_rows*n_cols+1)])
+				# append list of all possible values
+				valid_array_init[row].append(possible_values)
 			else:
 				valid_array_init[row].append(grid[row][column])
 	priority_array, valid_array = create_priority(grid, n_rows, n_cols, valid_array_init)
