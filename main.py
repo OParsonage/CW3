@@ -138,10 +138,22 @@ def valid(grid, row_index, column_index, number, n_rows, n_cols):
 	column = [grid[n][column_index] for n in range(0,len(grid))] # we create a list of the numbers in the column
 	if number in column: # if the number is already in the column, it is not valid
 		return False
-	boxes = get_squares(grid,n_rows,n_cols) # we create a list of the numbers in the box
-	box = boxes[n_rows*(row_index//n_rows)+column_index//n_cols] # we find the box in which the cell is
-	if number in box: # if the number is already in the box, it is not valid
-		return False
+	
+	# Check sub grid
+	# find the coordinates of the top left corner of the sub grid
+	grid_x = column_index // n_cols
+	grid_y = row_index // n_rows
+
+	# check each cell in the sub grid to see if the number is already present
+	for i in range(grid_y*n_rows, grid_y*n_rows + n_rows):
+		for j in range(grid_x * n_cols, grid_x*n_cols + n_cols):
+			if grid[i][j] == number and (i,j) != (row_index,column_index):
+				return False
+	
+	# boxes = get_squares(grid,n_rows,n_cols) # we create a list of the numbers in the box
+	# box = boxes[n_rows*(row_index//n_rows)+column_index//n_cols] # we find the box in which the cell is
+	# if number in box: # if the number is already in the box, it is not valid
+	# 	return False
 	return True # if the number is not in the row, column or box, it is valid
 
 def priority_length(term):
@@ -233,7 +245,6 @@ def solve(grid, n_rows, n_cols):
 				valid_array_init[row].append([1,2,3,4,5,6,7,8,9])
 			else:
 				valid_array_init[row].append(grid[row][column])
-
 	priority_array, valid_array = create_priority(grid, n_rows, n_cols, valid_array_init)
 	#return random_solve(grid, n_rows, n_cols)
 	#return recursive_solve(grid, n_rows, n_cols, priority_array)
