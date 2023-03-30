@@ -65,9 +65,9 @@ grid8 = [
 		[0, 0, 0, 0, 0, 0, 0, 0, 0]
 		]
 
-#grids = [(grid1, 2, 2), (grid2, 2, 2), (grid3, 2, 2), (grid4, 2, 2), (grid5, 2, 2), (grid6, 2, 3)]
+grids = [(grid1, 2, 2), (grid2, 2, 2), (grid3, 2, 2), (grid4, 2, 2), (grid5, 2, 2), (grid6, 2, 3), (grid7, 3, 3), (grid8, 3, 3)]
 #grids = [(grid1, 2, 2)]
-grids = [(grid8, 3, 3)]
+#grids = [(grid1, 2, 2)]
 
 '''
 ===================================
@@ -209,18 +209,18 @@ def recursive_solve(grid, n_rows, n_cols, priority_array):
 	# we return the grid if it is already solved
 
 def wavefront_solve(grid, n_rows, n_cols, valid_array, priority_array):
-	while len(priority_array[0][2]) > 0:
-		while len(priority_array[0][2]) == 1:
-			priority_array, valid_array, grid = simplify(priority_array, valid_array, grid, n_rows, n_cols)
-			if len(priority_array) == 0:
+	while len(priority_array[0][2]) > 0: # Test if available numbers exist on the best defined blank space
+		while len(priority_array[0][2]) == 1: # Test if a number is ready to be entered directly
+			priority_array, valid_array, grid = simplify(priority_array, valid_array, grid, n_rows, n_cols) # Simplify the grid to remove any singles and shorten any possibles
+			if len(priority_array) == 0: # If this clears the priority_array, return the completed grid
 				return(grid)
 				
-		if len(priority_array[0][2]) > 1:
-			for index in range(len(priority_array[0][2])):
-				valid_array[priority_array[0][0]][priority_array[0][1]] = priority_array[0][2][index]
-				priority_array[0][2] = priority_array[0][2][1:]
-				wavefront_solve(grid, n_rows, n_cols, valid_array, priority_array)
-				if check_solution(grid, n_rows, n_cols):
+		if len(priority_array[0][2]) > 1: # Test if the grid branches due to more than one possible entry
+			for index in range(len(priority_array[0][2])): # Iterate through all values in the branching list
+				valid_array[priority_array[0][0]][priority_array[0][1]] = priority_array[0][2][index] # Enter the next value from above line into valid_array
+				priority_array[0][2] = priority_array[0][2][1:] # Discard the entered value from the priority_array
+				wavefront_solve(grid, n_rows, n_cols, valid_array, priority_array) # Call self to go down a recursion layer
+				if check_solution(grid, n_rows, n_cols): # If the grid returned by the previous recursion layer is correct, return completed grid
 					return grid
 
 def simplify(priority_array, valid_array, grid, n_rows, n_cols):
@@ -238,11 +238,13 @@ def solve(grid, n_rows, n_cols):
 	Comment out one of the lines below to either use the random or recursive solver
 	'''
 	valid_array_init = []
+	possible_values = list(range(1,n_rows*n_cols+1))
 	for row in range(0, len(grid)): # i is the row
 		valid_array_init.append([])
 		for column in range(0, len(grid)): # j is the column
 			if grid[row][column] == 0: # if the cell is empty
-				valid_array_init[row].append([1,2,3,4,5,6,7,8,9])
+				# append list of all possible values
+				valid_array_init[row].append(possible_values)
 			else:
 				valid_array_init[row].append(grid[row][column])
 	priority_array, valid_array = create_priority(grid, n_rows, n_cols, valid_array_init)
