@@ -65,22 +65,9 @@ grid8 = [
 		[0, 0, 0, 0, 0, 0, 0, 0, 0]
 		]
 
-grid9 = [
-		[0, 0, 0, 0, 0, 3, 0, 0, 0],
-		[0, 0, 0, 0, 8, 0, 4, 0, 0],
-		[0, 9, 4, 0, 0, 0, 0, 0, 0],
-		[0, 0, 0, 0, 0, 0, 0, 0, 9],
-		[0, 0, 0, 0, 0, 0, 0, 0, 0],
-		[0, 0, 0, 0, 0, 0, 2, 0, 0],
-		[0, 0, 0, 0, 0, 0, 0, 8, 0],
-		[0, 0, 0, 0, 0, 0, 0, 0, 7],
-		[0, 0, 0, 0, 0, 0, 0, 0, 0],
-		]		
-
-#grids = [(grid1, 2, 2), (grid2, 2, 2), (grid3, 2, 2), (grid4, 2, 2), (grid5, 2, 2), (grid6, 2, 3), (grid7, 3, 3), (grid8, 3, 3)]
+grids = [(grid1, 2, 2), (grid2, 2, 2), (grid3, 2, 2), (grid4, 2, 2), (grid5, 2, 2), (grid6, 2, 3), (grid7, 3, 3), (grid8, 3, 3)]
 #grids = [(grid1, 2, 2)]
 #grids = [(grid1, 2, 2)]
-grids = [(grid9, 3, 3)]
 
 '''
 ===================================
@@ -227,14 +214,12 @@ def wavefront_solve(grid, n_rows, n_cols, valid_array, priority_array):
 			priority_array, valid_array, grid = simplify(priority_array, valid_array, grid, n_rows, n_cols) # Simplify the grid to remove any singles and shorten any possibles
 			if len(priority_array) == 0: # If this clears the priority_array, return the completed grid
 				return(grid)
+				
 		if len(priority_array[0][2]) > 1: # Test if the grid branches due to more than one possible entry
 			for index in range(len(priority_array[0][2])): # Iterate through all values in the branching list
 				valid_array[priority_array[0][0]][priority_array[0][1]] = priority_array[0][2][index] # Enter the next value from above line into valid_array
-				priority_array_trimmed = priority_array
-				priority_array = to_tuple(priority_array)
-				priority_array_trimmed.pop(0)
-#				priority_array_trimmed[0][2] = priority_array_trimmed[0][2][index] # Discard the entered value from the priority_array_trimmed
-				wavefront_solve(grid, n_rows, n_cols, valid_array, priority_array_trimmed) # Call self to go down a recursion layer
+				priority_array[0][2] = priority_array[0][2][1:] # Discard the entered value from the priority_array
+				wavefront_solve(grid, n_rows, n_cols, valid_array, priority_array) # Call self to go down a recursion layer
 				if check_solution(grid, n_rows, n_cols): # If the grid returned by the previous recursion layer is correct, return completed grid
 					return grid
 
