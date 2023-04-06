@@ -196,6 +196,8 @@ def create_priority(grid, n_rows, n_cols, valid_array_old):
 						valid_array[row][column].append(value)
 						priority_array[-1][2].append(value)
 	priority_array.sort(key=priority_length)
+	if type(priority_array[0][2]) == int:
+		priority_array[0][2] = [priority_array[0][2]]
 	return priority_array, valid_array
 
 # function to solve the sudoku board
@@ -227,19 +229,32 @@ def wavefront_solve(grid, n_rows, n_cols, valid_array, priority_array):
 				return(grid)
 				
 		if len(priority_array[0][2]) > 1: # Test if the grid branches due to more than one possible entry
+			ori_first = priority_array[0]
+			ori_remainder = priority_array[1:]
 			for index in range(len(priority_array[0][2])): # Iterate through all values in the branching list
-				valid_array[priority_array[0][0]][priority_array[0][1]] = priority_array[0][2][index] # Enter the next value from above line into valid_array
-				priority_array[0][2] = priority_array[0][2][1:] # Discard the entered value from the priority_array
-				wavefront_solve(grid, n_rows, n_cols, valid_array, priority_array) # Call self to go down a recursion layer
+				if type(priority_array[0][2]) == int: # Code to avoid dropping out of lists unexpectedly
+					priority_array[0][2] = [priority_array[0][2]]
+				ori_first_new = [ori_first[0], ori_first[1], [ori_first[2][index]]]
+#				if len(priority_array[0][2]) == 0: # Test for bottoming out
+#					return([ori_first, ori_remainder])
+#				valid_array[ori_first[0]][ori_first[1]] = priority_array[0][2][0] # Enter the next value from above line into valid_array
+#				priority_array[0][2] = priority_array[0][2][1:] # Discard the entered value from the priority_array			
+				priority_try = 	[ori_first_new] + ori_remainder
+				grid_new, priority_array_new = wavefront_solve(grid, n_rows, n_cols, valid_array, priority_try) # Call self to go down a recursion layer
 				if check_solution(grid, n_rows, n_cols): # If the grid returned by the previous recursion layer is correct, return completed grid
-					return grid
+					return grid_new, priority_array_new
+			return grid, [ori_first] + ori_remainder # If all have been tested and failed, send original priority_array back up
+	return grid, priority_array
 
 def simplify(priority_array, valid_array, grid, n_rows, n_cols):
-	for index in range(0, len(priority_array)):
-		if len(priority_array[index][2]) == 1:
-			priority_array[index][2] = priority_array[index][2][0]
-			valid_array[priority_array[index][0]][priority_array[index][1]] = priority_array[index][2]
-			grid[priority_array[index][0]][priority_array[index][1]] = priority_array[index][2]
+	for index in range(0, len(priority_array)): # Iterate through priority_array
+		if len(priority_array[index][2]) == 1: # Test if number is ready to be directly input
+#			priority_array[index][2] = priority_array[index][2][0]
+			valid_array[priority_array[index][0]][priority_array[index][1]] = priority_array[index][2][0]
+			grid[priority_array[index][0]][priority_array[index][1]] = priority_array[index][2][0]
+		else:
+			priority_array, valid_array = create_priority(grid, n_rows, n_cols, valid_array)
+			return(priority_array, valid_array, grid)
 	priority_array, valid_array = create_priority(grid, n_rows, n_cols, valid_array)
 	return(priority_array, valid_array, grid)
 
@@ -261,7 +276,8 @@ def solve(grid, n_rows, n_cols):
 	priority_array, valid_array = create_priority(grid, n_rows, n_cols, valid_array_init)
 	#return random_solve(grid, n_rows, n_cols)
 	#return recursive_solve(grid, n_rows, n_cols, priority_array)
-	return wavefront_solve(grid, n_rows, n_cols, valid_array, priority_array)
+	result, empty_priority = wavefront_solve(grid, n_rows, n_cols, valid_array, priority_array)
+	return result
 
 
 '''
