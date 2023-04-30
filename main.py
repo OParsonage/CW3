@@ -222,27 +222,50 @@ def recursive_solve(grid, n_rows, n_cols, priority_array):
 	return(grid)
 	# we return the grid if it is already solved
 
+random.seed(11)
+
 def wavefront_solve(grid, n_rows, n_cols, valid_array, priority_array):
 	grid_update = copy.deepcopy(grid)
 	priority_array_update = copy.deepcopy(priority_array)
-	while priority_array and priority_array[0][2]:
-		if len(priority_array[0][2]) == 1:
-			valid_array[priority_array[0][0]][priority_array[0][1]] = priority_array[0][2][0]
-			grid_update[priority_array[0][0]][priority_array[0][1]] = priority_array[0][2][0]
-			priority_array = priority_array[1:]
-		else:
-			valid_array_to_pass = copy.deepcopy(valid_array)
-			test_num = random.choice(priority_array[0][2])
-			if valid(grid_update, priority_array[0][0], priority_array[0][1], test_num, n_rows, n_cols):
-				valid_array_to_pass[priority_array[0][0]][priority_array[0][1]] = test_num
-				grid_update[priority_array[0][0]][priority_array[0][1]] = valid_array_to_pass[priority_array[0][0]][priority_array[0][1]]
-				if priority_array:
-					priority_array_to_pass, valid_array_to_pass = create_priority(grid_update, n_rows, n_cols, valid_array_to_pass)
-					grid_update, priority_array = wavefront_solve(grid_update, n_rows, n_cols, valid_array_to_pass, priority_array_to_pass)
-				else:
-					return grid_update, priority_array
+	valid_array_update = copy.deepcopy(valid_array)
+	while priority_array_update:
+		if len(priority_array_update[0][2]) == 1:
+			if valid(grid_update, priority_array_update[0][0], priority_array_update[0][1], priority_array_update[0][2][0], n_rows, n_cols):
+				grid_update[priority_array_update[0][0]][priority_array_update[0][1]] = priority_array_update[0][2][0]
+				priority_array_update = priority_array_update[1:]
 			else:
-				priority_array[0][2].remove(test_num)
+				print("priority")
+				for line in priority_array_update:
+					print(line)
+				print("update")
+				for line in grid_update:
+					print(line)
+				print("grid")
+				for line in grid:
+					print(line)
+				return False, False
+		else:
+			test_num = random.choice(priority_array_update[0][2])
+			print(test_num)
+			if valid(grid_update, priority_array_update[0][0], priority_array_update[0][1], test_num, n_rows, n_cols):
+				grid_update_2 = copy.deepcopy(grid_update)
+				grid_update_2[priority_array_update[0][0]][priority_array_update[0][1]] = test_num
+				priority_array_update_2, valid_array_update_2 = create_priority(grid_update_2, n_rows, n_cols, valid_array_update)
+				if check_solution(grid_update_2, n_rows, n_cols):
+					return grid_update_2, False
+				if not priority_array_update_2[0][2]:
+					priority_array_update[0][2].remove(test_num)
+					continue
+				grid_update_2, priority_array_update_2 = wavefront_solve(grid_update_2, n_rows, n_cols, valid_array_update_2, priority_array_update_2)
+				if not grid_update_2:
+					priority_array_update[0][2].remove(test_num)
+			if "grid_update_2" in locals():
+				grid_check = grid_update_2
+			elif "grid_update" in locals():
+				grid_check = grid_update
+			if check_solution(grid_check, n_rows, n_cols):
+				return grid_check, False
+
 	return grid_update, priority_array
 
 def simplify(priority_array, valid_array, grid, n_rows, n_cols):
