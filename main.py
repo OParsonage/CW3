@@ -167,6 +167,12 @@ class ProfileResults:
 def _getArgs():
     parser = argparse.ArgumentParser()
     parser.add_argument(
+        "--solver",
+        choices=["recursive", "wavefront"],
+        help="Choose solver",
+        default="recursive",
+    )
+    parser.add_argument(
         "--explain",
         help="Provide set of instructions for solving grid",
         default=False,
@@ -421,7 +427,7 @@ def wavefront_solve(grid, n_rows, n_cols, valid_array, priority_array):
     return grid_update, priority_array
 
 
-def solve(grid, n_rows, n_cols):
+def solve(grid, n_rows, n_cols, solver):
     """
     Solve function for Sudoku coursework.
     Comment out one of the lines below to either use the random or recursive solver
@@ -439,11 +445,12 @@ def solve(grid, n_rows, n_cols):
     priority_array, valid_array = create_priority(
         grid, n_rows, n_cols, valid_array_init
     )
-    # return random_solve(grid, n_rows, n_cols)
-    return recursive_solve(grid, n_rows, n_cols, priority_array)
-    result, empty_priority = wavefront_solve(
-        grid, n_rows, n_cols, valid_array, priority_array
-    )
+    if solver == "recursive":
+        result = recursive_solve(grid, n_rows, n_cols, priority_array)
+    elif solver == "wavefront":
+        result, empty_priority = wavefront_solve(
+            grid, n_rows, n_cols, valid_array, priority_array
+        )
     return result
 
     priority_array, valid_array = create_priority(grid, n_rows, n_cols)
@@ -567,14 +574,14 @@ def hint(hints, solved_grid, original_grid, n_rows, n_cols):
 # function to plot the results of the profiling as a bar chart
 
 
-def profiling(grid, n_cols, n_rows, repeat):
+def profiling(grid, n_cols, n_rows, repeat, solver):
     SETUP = """
 import copy
 grid_to_test = copy.deepcopy(grid)
 """  # Deepcopy required to prevent mutation of grid variable for subsequent runs. Setup code is not included in execution time.
 
     STMT = """
-solved_grid = solve(grid_to_test, n_rows, n_cols)
+solved_grid = solve(grid_to_test, n_rows, n_cols, solver)
 """
 
     difficulty = sum(row.count(0) for row in grid)
@@ -588,6 +595,7 @@ solved_grid = solve(grid_to_test, n_rows, n_cols)
             "n_rows": n_cols,
             "n_cols": n_rows,
             "solve": solve,
+            "solver": solver,
         },
     )
     return ProfileResults(difficulty, n_rows, n_cols, results)
@@ -698,7 +706,9 @@ def _main():
                 [int(value) for value in lst] for lst in list(reader)
             ]
             solution = solve(
-                copy.deepcopy(grid_input), *dims[str(len(grid_input))]
+                copy.deepcopy(grid_input),
+                *dims[str(len(grid_input))],
+                args.solver,
             )
         if args.hint:
             try:
@@ -745,7 +755,7 @@ def _main():
         for i, (grid, n_rows, n_cols) in enumerate(grids):
             print("Solving grid: %d" % (i + 1))
             start_time = time.time()
-            solution = solve(grid, n_rows, n_cols)
+            solution = solve(grid, n_rows, n_cols, args.solver)
             elapsed_time = time.time() - start_time
             print("Solved in: %f seconds" % elapsed_time)
             if args.hint:
@@ -771,7 +781,7 @@ def _main():
         if args.profile:
             repeats = 10
             profiling_results = [
-                profiling(grid, n_rows, n_cols, repeats)
+                profiling(grid, n_rows, n_cols, repeats, args.solver)
                 for _, (grid, n_rows, n_cols) in enumerate(original_grids)
             ]
             barplot(profiling_results, repeats)
