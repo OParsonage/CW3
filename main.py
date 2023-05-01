@@ -1,4 +1,5 @@
 import time
+import random
 import csv
 import argparse
 import copy
@@ -166,6 +167,12 @@ class ProfileResults:
 def _getArgs():
     parser = argparse.ArgumentParser()
     parser.add_argument(
+        "--solver",
+        choices=["recursive", "wavefront"],
+        help="Choose solver",
+        default="recursive",
+    )
+    parser.add_argument(
         "--explain",
         help="Provide set of instructions for solving grid",
         default=False,
@@ -205,6 +212,12 @@ def check_section(section, n):
     return False
 
 
+def reader(data_file):  # function to read the data from the csv file
+    with open(data_file) as data:
+        all_data = csv.reader(data)  # read the data
+        return list(all_data)  # return the data as a list
+
+
 def get_squares(grid, n_rows, n_cols):
     squares = []
     for i in range(n_cols):
@@ -221,30 +234,100 @@ def get_squares(grid, n_rows, n_cols):
 
 def check_solution(grid, n_rows, n_cols):
     """
-    This function checks whether a sudoku board has been correctly solved.
-
-    args: grid - representation of a suduko board as a nested list
+    This function is used to check whether a sudoku board has been correctly solved
+    args: grid - representation of a suduko board as a nested list.
     returns: True (correct solution) or False (incorrect solution)
     """
     n = n_rows * n_cols
-
     for row in grid:
-        if check_section(row, n) is False:
+        if check_section(row, n):
             return False
-
     for i in range(n_rows):
         column = []
         for row in grid:
             column.append(row[i])
-        if check_section(column, n) is False:
+        if check_section(column, n):
             return False
-
     squares = get_squares(grid, n_rows, n_cols)
     for square in squares:
-        if check_section(square, n) is False:
+        if check_section(square, n):
             return False
-
     return True
+
+
+# we check if the number is valid in the row, column and box
+def valid(grid, row_index, column_index, number, n_rows, n_cols):
+    """Tests if the number to be input is a valid input to the existing grid, i.e. does not clash with another value in the row, column, or box
+    Inputs:
+            grid: current grid to be tested against
+            row_index, column_index: location of value in grid
+            number: value of number to be tested
+            n_rows: number of boxes horizontally
+            n_cols: number of boxes vertically
+    Outputs:
+            Boolean True/False"""
+    if (
+        number in grid[row_index]
+    ):  # if the number is already in the row, it is not valid
+        return False
+    column = [
+        grid[n][column_index] for n in range(0, len(grid))
+    ]  # we create a list of the numbers in the column
+    if (
+        number in column
+    ):  # if the number is already in the column, it is not valid
+        return False
+
+    # Check sub grid
+    # find the coordinates of the top left corner of the sub grid
+    grid_x = column_index // n_cols
+    grid_y = row_index // n_rows
+
+    # check each cell in the sub grid to see if the number is already present
+    for i in range(grid_y * n_rows, grid_y * n_rows + n_rows):
+        for j in range(grid_x * n_cols, grid_x * n_cols + n_cols):
+            if grid[i][j] == number and (i, j) != (row_index, column_index):
+                return False
+
+    # boxes = get_squares(grid,n_rows,n_cols) # we create a list of the numbers in the box
+    # box = boxes[n_rows*(row_index//n_rows)+column_index//n_cols] # we find the box in which the cell is
+    # if number in box: # if the number is already in the box, it is not valid
+    # 	return False
+    return True  # if the number is not in the row, column or box, it is valid
+
+
+def priority_length(term):
+    return len(term[2])
+
+
+def create_priority(grid, n_rows, n_cols, valid_array_old):
+    """Creates an array of the number of valid values & a separate array with empty values replaced with an array of all valid values
+    Inputs:
+        grid: current grid to be solved
+            n_rows: number of boxes horizontally
+                n_cols: number of boxes vertically
+        Outputs:
+        priority_array: array of coordinates in the format [row_no, col_no, possible_values_count]
+            valid_array: array of original grid with all 0-values replaced with viable values
+    """
+    priority_array = []
+    valid_array = copy.deepcopy(valid_array_old)
+    n = n_rows * n_cols
+    for row in range(0, n):  # i is the row
+        for column in range(0, n):  # j is the column
+            if grid[row][column] == 0:  # if the cell is empty
+                valid_array[row][column] = []
+                priority_array.append([row, column, []])
+                for value in valid_array_old[row][column]:
+                    if valid(
+                        grid, row, column, value, n_rows, n_cols
+                    ):  # test that the value entered could be part of a valid solution
+                        valid_array[row][column].append(value)
+                        priority_array[-1][2].append(value)
+    priority_array.sort(key=priority_length)
+    if priority_array and type(priority_array[0][2]) == int:
+        priority_array[0][2] = [priority_array[0][2]]
+    return priority_array, valid_array
 
 
 # function to solve the sudoku board
@@ -276,94 +359,99 @@ def recursive_solve(grid, n_rows, n_cols, priority_array):
             column
         ] = 0  # if we have tried all the numbers and none of them work, we return the grid to its original state
     return grid
+    # we return the grid if it is already solved
 
 
-# we return the grid if it is already solved
+def wavefront_solve(grid, n_rows, n_cols, valid_array, priority_array):
+    grid_update = copy.deepcopy(grid)
+    priority_array_update = copy.deepcopy(priority_array)
+    valid_array_update = copy.deepcopy(valid_array)
+    while priority_array_update:
+        if len(priority_array_update[0][2]) == 1:
+            if valid(
+                grid_update,
+                priority_array_update[0][0],
+                priority_array_update[0][1],
+                priority_array_update[0][2][0],
+                n_rows,
+                n_cols,
+            ):
+                grid_update[priority_array_update[0][0]][
+                    priority_array_update[0][1]
+                ] = priority_array_update[0][2][0]
+                priority_array_update = priority_array_update[1:]
+            else:
+                return False, False
+        else:
+            test_num = random.choice(priority_array_update[0][2])
+            if valid(
+                grid_update,
+                priority_array_update[0][0],
+                priority_array_update[0][1],
+                test_num,
+                n_rows,
+                n_cols,
+            ):
+                grid_update_2 = copy.deepcopy(grid_update)
+                grid_update_2[priority_array_update[0][0]][
+                    priority_array_update[0][1]
+                ] = test_num
+                (
+                    priority_array_update_2,
+                    valid_array_update_2,
+                ) = create_priority(
+                    grid_update_2, n_rows, n_cols, valid_array_update
+                )
+                if check_solution(grid_update_2, n_rows, n_cols):
+                    return grid_update_2, False
+                if not priority_array_update_2[0][2]:
+                    priority_array_update[0][2].remove(test_num)
+                    continue
+                grid_update_2, priority_array_update_2 = wavefront_solve(
+                    grid_update_2,
+                    n_rows,
+                    n_cols,
+                    valid_array_update_2,
+                    priority_array_update_2,
+                )
+                if not grid_update_2:
+                    priority_array_update[0][2].remove(test_num)
+            else:
+                priority_array_update[0][2].remove(test_num)
+            if "grid_update_2" in locals() and grid_update_2:
+                grid_check = grid_update_2
+            elif "grid_update" in locals() and grid_update:
+                grid_check = grid_update
+            if check_solution(grid_check, n_rows, n_cols):
+                return grid_check, False
+    return grid_update, priority_array
 
 
-# we check if the number is valid in the row, column and box
-def valid(grid, row_index, column_index, number, n_rows, n_cols):
-    """
-    Tests if the number to be input is a valid input to the existing grid, i.e. does not clash with another value in the row, column, or box.
-
-    Inputs:
-            grid: current grid to be tested against
-            row_index, column_index: location of value in grid
-            number: value of number to be tested
-            n_rows: number of boxes horizontally
-            n_cols: number of boxes vertically
-    Outputs:
-            Boolean True/False"""
-    if (
-        number in grid[row_index]
-    ):  # if the number is already in the row, it is not valid
-        return False
-    column = [
-        grid[n][column_index] for n in range(0, len(grid))
-    ]  # we create a list of the numbers in the column
-    if (
-        number in column
-    ):  # if the number is already in the column, it is not valid
-        return False
-    boxes = get_squares(
-        grid, n_rows, n_cols
-    )  # we create a list of the numbers in the box
-    box = boxes[
-        n_rows * (row_index // n_rows) + column_index // n_cols
-    ]  # we find the box in which the cell is
-    if number in box:  # if the number is already in the box, it is not valid
-        return False
-    return True  # if the number is not in the row, column or box, it is valid
-
-
-def priority_length(term):
-    return len(term[2])
-
-
-def to_tuple(lst):
-    return tuple(to_tuple(i) if isinstance(i, list) else i for i in lst)
-
-
-def create_priority(grid, n_rows, n_cols):
-    """
-    Creates an array of the number of valid values and a separate array with empty values replaced with an array of all valid values.
-
-    Inputs:
-        grid: current grid to be solved
-        n_rows: number of boxes horizontally
-        n_cols: number of boxes vertically
-    Outputs:
-        priority_array: array of coordinates in the format [row_no, col_no, possible_values_count]
-        valid_array: array of original grid with all 0-values replaced with viable values
-    """
-    priority_array = []
-    valid_array = []
-    for line in grid:
-        valid_array.append(list(line))
-    n = n_rows * n_cols
-    grid = to_tuple(grid)  # Tuple is created here
-    for row in range(0, n):  # i is the row
-        for column in range(0, n):  # j is the column
-            if grid[row][column] == 0:  # if the cell is empty
-                valid_array[row][column] = []
-                priority_array.append([row, column, []])
-                for value in range(
-                    1, n + 1
-                ):  # k is the number we are trying to put in the cell
-                    if valid(
-                        grid, row, column, value, n_rows, n_cols
-                    ):  # test that the value entered could be part of a valid solution
-                        valid_array[row][column].append(value)
-                        priority_array[-1][2].append(value)
-    priority_array.sort(key=priority_length)
-    return priority_array, valid_array
-
-
-def solve(grid, n_rows, n_cols):
+def solve(grid, n_rows, n_cols, solver):
     """
     Solve function for Sudoku coursework.
     Comment out one of the lines below to either use the random or recursive solver
     """
+    valid_array_init = []
+    possible_values = list(range(1, n_rows * n_cols + 1))
+    for row in range(0, len(grid)):  # i is the row
+        valid_array_init.append([])
+        for column in range(0, len(grid)):  # j is the column
+            if grid[row][column] == 0:  # if the cell is empty
+                # append list of all possible values
+                valid_array_init[row].append(possible_values)
+            else:
+                valid_array_init[row].append(grid[row][column])
+    priority_array, valid_array = create_priority(
+        grid, n_rows, n_cols, valid_array_init
+    )
+    if solver == "recursive":
+        result = recursive_solve(grid, n_rows, n_cols, priority_array)
+    elif solver == "wavefront":
+        result, empty_priority = wavefront_solve(
+            grid, n_rows, n_cols, valid_array, priority_array
+        )
+    return result
 
     priority_array, valid_array = create_priority(grid, n_rows, n_cols)
     solved_grid = recursive_solve(grid, n_rows, n_cols, priority_array)
@@ -486,15 +574,14 @@ def hint(hints, solved_grid, original_grid, n_rows, n_cols):
 # function to plot the results of the profiling as a bar chart
 
 
-def profiling(grid, n_cols, n_rows, repeat):
+def profiling(grid, n_cols, n_rows, repeat, solver):
     SETUP = """
 import copy
 grid_to_test = copy.deepcopy(grid)
 """  # Deepcopy required to prevent mutation of grid variable for subsequent runs. Setup code is not included in execution time.
 
     STMT = """
-priority_array, valid_array = create_priority(grid_to_test, n_rows, n_cols)
-solved_grid = recursive_solve(grid_to_test, n_rows, n_cols, priority_array)
+solved_grid = solve(grid_to_test, n_rows, n_cols, solver)
 """
 
     difficulty = sum(row.count(0) for row in grid)
@@ -507,8 +594,8 @@ solved_grid = recursive_solve(grid_to_test, n_rows, n_cols, priority_array)
             "grid": grid,
             "n_rows": n_cols,
             "n_cols": n_rows,
-            "create_priority": create_priority,
-            "recursive_solve": recursive_solve,
+            "solve": solve,
+            "solver": solver,
         },
     )
     return ProfileResults(difficulty, n_rows, n_cols, results)
@@ -619,7 +706,9 @@ def _main():
                 [int(value) for value in lst] for lst in list(reader)
             ]
             solution = solve(
-                copy.deepcopy(grid_input), *dims[str(len(grid_input))]
+                copy.deepcopy(grid_input),
+                *dims[str(len(grid_input))],
+                args.solver,
             )
         if args.hint:
             try:
@@ -666,7 +755,7 @@ def _main():
         for i, (grid, n_rows, n_cols) in enumerate(grids):
             print("Solving grid: %d" % (i + 1))
             start_time = time.time()
-            solution = solve(grid, n_rows, n_cols)
+            solution = solve(grid, n_rows, n_cols, args.solver)
             elapsed_time = time.time() - start_time
             print("Solved in: %f seconds" % elapsed_time)
             if args.hint:
@@ -692,7 +781,7 @@ def _main():
         if args.profile:
             repeats = 10
             profiling_results = [
-                profiling(grid, n_rows, n_cols, repeats)
+                profiling(grid, n_rows, n_cols, repeats, args.solver)
                 for _, (grid, n_rows, n_cols) in enumerate(original_grids)
             ]
             barplot(profiling_results, repeats)
