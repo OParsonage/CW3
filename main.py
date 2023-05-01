@@ -40,7 +40,7 @@ def _main() -> None:
                 )
             except TooManyHintsError:
                 print(
-                    f"Error, number of hints requested is greater than the number of zeroes present in grid"
+                    "Error, number of hints requested is greater than the number of zeroes present in grid"
                 )
                 sys.exit(1)
         if args.explain:
