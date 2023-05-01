@@ -31,7 +31,7 @@ def _getArgs() -> argparse.Namespace:
     parser.add_argument(
         "--solver",
         choices=["recursive", "wavefront"],
-        help="Choose solver",
+        help="Choose either recursive or wavefront solver",
         default="recursive",
     )
     parser.add_argument(

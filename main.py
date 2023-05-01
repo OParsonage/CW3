@@ -2,7 +2,6 @@ import time
 import csv
 import copy
 import sys
-import itertools
 from original_grids import grids as original_grids
 from solve_funcs import solve, _check_solution
 from arg import (
