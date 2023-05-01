@@ -77,9 +77,9 @@ grid9 = [
 		[0, 0, 0, 0, 0, 0, 0, 0, 7],
 		[0, 0, 0, 0, 0, 0, 0, 0, 0],
 		]
-#grids = [(grid1, 2, 2), (grid2, 2, 2), (grid3, 2, 2), (grid4, 2, 2), (grid5, 2, 2), (grid6, 2, 3), (grid7, 3, 3), (grid8, 3, 3)]
+grids = [(grid7, 3, 3)]
 #grids = [(grid1, 2, 2)]
-grids = [(grid5, 2, 2)]
+# grids = [(grid9, 3, 3)]
 
 '''
 ===================================
@@ -184,7 +184,7 @@ def create_priority(grid, n_rows, n_cols, valid_array_old):
         priority_array: array of coordinates in the format [row_no, col_no, possible_values_count]
 	    valid_array: array of original grid with all 0-values replaced with viable values'''
 	priority_array = []
-	valid_array = valid_array_old
+	valid_array = copy.deepcopy(valid_array_old)
 	valid_array_old = to_tuple(valid_array_old)
 	n = n_rows*n_cols
 	for row in range(0, n): # i is the row
@@ -222,7 +222,6 @@ def recursive_solve(grid, n_rows, n_cols, priority_array):
 	return(grid)
 	# we return the grid if it is already solved
 
-random.seed(11)
 
 def wavefront_solve(grid, n_rows, n_cols, valid_array, priority_array):
 	grid_update = copy.deepcopy(grid)
@@ -234,15 +233,15 @@ def wavefront_solve(grid, n_rows, n_cols, valid_array, priority_array):
 				grid_update[priority_array_update[0][0]][priority_array_update[0][1]] = priority_array_update[0][2][0]
 				priority_array_update = priority_array_update[1:]
 			else:
-				print("priority")
-				for line in priority_array_update:
-					print(line)
-				print("update")
-				for line in grid_update:
-					print(line)
-				print("grid")
-				for line in grid:
-					print(line)
+				# print("priority")
+				# for line in priority_array_update:
+				# 	print(line)
+				# print("update")
+				# for line in grid_update:
+				# 	print(line)
+				# print("grid")
+				# for line in grid:
+				# 	print(line)
 				return False, False
 		else:
 			test_num = random.choice(priority_array_update[0][2])
@@ -259,9 +258,9 @@ def wavefront_solve(grid, n_rows, n_cols, valid_array, priority_array):
 				grid_update_2, priority_array_update_2 = wavefront_solve(grid_update_2, n_rows, n_cols, valid_array_update_2, priority_array_update_2)
 				if not grid_update_2:
 					priority_array_update[0][2].remove(test_num)
-			if "grid_update_2" in locals():
+			if "grid_update_2" in locals() and grid_update_2:
 				grid_check = grid_update_2
-			elif "grid_update" in locals():
+			elif "grid_update" in locals() and grid_update:
 				grid_check = grid_update
 			if check_solution(grid_check, n_rows, n_cols):
 				return grid_check, False
