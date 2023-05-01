@@ -167,7 +167,7 @@ def _getArgs():
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--explain",
-        help="Provide set of instructions for solving grid",
+        help="Provide set of instructions for solving grid.",
         default=False,
         action=argparse.BooleanOptionalAction,
     )
@@ -175,21 +175,23 @@ def _getArgs():
         "--file",
         nargs=2,
         metavar=("INPUT", "OUTPUT"),
-        help="Input file for grid to solve and output file for solved grid. If 'explain' is set then include explanations",
+        help="Input file for grid to solve and output file for solved grid. If 'explain' is set then include explanations.",
     )
     parser.add_argument(
         "--hint",
-        help="Integer value for number of values to fill",
+        help="Integer value for number of values to fill.",
         default=None,
     )
     parser.add_argument(
         "--profile",
-        help="Measure performance and produce plots using 'timeit'",
+        help="Measure performance and produce plots using 'timeit'. All other flags are ignored if enabled.",
         default=False,
         action=argparse.BooleanOptionalAction,
     )
 
     args = parser.parse_args()
+    if args.profile:
+        args.explain, args.file, args.hint = False, False, False
     return args
 
 
