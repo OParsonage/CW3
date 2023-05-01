@@ -240,17 +240,17 @@ def check_solution(grid, n_rows, n_cols):
     """
     n = n_rows * n_cols
     for row in grid:
-        if check_section(row, n) == False:
+        if check_section(row, n):
             return False
     for i in range(n_rows):
         column = []
         for row in grid:
             column.append(row[i])
-        if check_section(column, n) == False:
+        if check_section(column, n):
             return False
     squares = get_squares(grid, n_rows, n_cols)
     for square in squares:
-        if check_section(square, n) == False:
+        if check_section(square, n):
             return False
     return True
 
