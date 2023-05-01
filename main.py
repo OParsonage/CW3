@@ -54,9 +54,11 @@ def _main() -> None:
         print("====================================")
         for i, (grid, n_rows, n_cols) in enumerate(grids):
             print("Solving grid: %d" % (i + 1))
-            start_time = time.time()
+            start_time = (
+                time.perf_counter()
+            )  # time.perf_counter() instead of time.time() as we are interested in compute time rather than elapsed time
             solution = solve(grid, n_rows, n_cols, args.solver)
-            elapsed_time = time.time() - start_time
+            elapsed_time = time.perf_counter() - start_time
             print("Solved in: %f seconds" % elapsed_time)
             if args.hint:
                 try:
