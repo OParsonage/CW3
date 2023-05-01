@@ -190,6 +190,10 @@ def _getArgs():
     )
 
     args = parser.parse_args()
+
+    if args.profile:
+        args.explain, args.file, args.hint = False, False, False
+
     return args
 
 
