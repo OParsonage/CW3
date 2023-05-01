@@ -37,9 +37,7 @@ def _check_solution(grid: list[list[int]], n_rows: int, n_cols: int) -> bool:
         if not _check_section(row, n):
             return False
     for i in range(n_rows):
-        column = []
-        for row in grid:
-            column.append(row[i])
+        column = [row[i] for row in grid]
         if not _check_section(column, n):
             return False
     squares = _get_squares(grid, n_rows, n_cols)
@@ -247,16 +245,14 @@ def solve(
     Solve function for Sudoku coursework.
     Comment out one of the lines below to either use the random or recursive solver
     """
-    valid_array_init = []
     possible_values = list(range(1, n_rows * n_cols + 1))
-    for row in range(0, len(grid)):  # i is the row
-        valid_array_init.append([])
-        for column in range(0, len(grid)):  # j is the column
-            if grid[row][column] == 0:  # if the cell is empty
-                # append list of all possible values
-                valid_array_init[row].append(possible_values)
-            else:
-                valid_array_init[row].append(grid[row][column])
+    valid_array_init = [
+        [
+            possible_values if grid[row][column] == 0 else grid[row][column]
+            for column, _ in enumerate(grid)
+        ]
+        for row, _ in enumerate(grid)
+    ]
     priority_array, valid_array = _create_priority(
         grid, n_rows, n_cols, valid_array_init
     )

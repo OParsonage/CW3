@@ -27,7 +27,9 @@ class ProfileResults:
 
 
 def _getArgs() -> argparse.Namespace:
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter
+    )
     parser.add_argument(
         "--solver",
         choices=["recursive", "wavefront"],
@@ -53,7 +55,7 @@ def _getArgs() -> argparse.Namespace:
     )
     parser.add_argument(
         "--profile",
-        help="Measure performance and produce plots using 'timeit'",
+        help="Measure performance and produce plots using 'timeit'. Other arguments will be ignored if this is set",
         default=False,
         action=argparse.BooleanOptionalAction,
     )
@@ -78,18 +80,15 @@ def explain(
     solved_grid: list[list[int]],
     to_terminal: bool,
 ) -> list[list[tuple[int, int]]]:
-    changes = []
-    for index, row in enumerate(original_grid):
-        changes.append(
-            [
-                (i, updated)
-                for i, (zero, updated) in enumerate(
-                    zip(row, solved_grid[index])
-                )
-                if zero != updated
-            ]
-        )
-    if to_terminal:
+    changes = [
+        [
+            (i, updated)
+            for i, (zero, updated) in enumerate(zip(row, solved_grid[index]))
+            if zero != updated
+        ]
+        for index, row in enumerate(original_grid)
+    ]
+    if to_terminal:  # False when --explain flag
         for row_number, row in enumerate(changes):
             for element in row:
                 print(
