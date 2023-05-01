@@ -68,14 +68,17 @@ def _main() -> None:
                         f"Error, number of hints requested is greater than the number of zeroes present in grid {i+1}"
                     )
                     sys.exit(1)
+            print("\nOriginal Grid:")
+            for line in original_grids[i][0]:
+                print(line)
+            print("\nSolution:")
             for line in solution:
                 print(line)
             if _check_solution(solution, n_rows, n_cols):
-                print("grid %d correct" % (i + 1))
+                print("grid %d correct\n" % (i + 1))
                 points = points + 10
-
             else:
-                print("grid %d incorrect" % (i + 1))
+                print("grid %d incorrect\n" % (i + 1))
             if args.explain:
                 explain(original_grids[i][0], solution, True)
         if args.profile:

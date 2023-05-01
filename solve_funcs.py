@@ -129,7 +129,6 @@ def _create_priority(
     priority_array.sort(key=_priority_length)
     if priority_array and type(priority_array[0][2]) == int:
         priority_array[0][2] = [priority_array[0][2]]
-    print(priority_array)
     return priority_array, valid_array
 
 
