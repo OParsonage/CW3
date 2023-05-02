@@ -234,7 +234,7 @@ def wavefront_solve(
     n_cols: int,
     valid_array: list[list[list[int] | int]],
     priority_array: list[list[int]],
-) -> tuple(list[list[int]] | bool, list[list[int]] | bool):
+) -> tuple[(list[list[int]] | bool), (list[list[int]] | bool)]:
     """
     A recursive Sudoku solver employing the 'wavefront' method. Checks if a valid solution has been reached if all grid locations are filled.
 
