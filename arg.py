@@ -212,6 +212,7 @@ def barplot(results: list[ProfileResults], repeats: int) -> None:
 
     # Set y-axis to logarithmic scale
     ax.set_yscale("log")
+    ax.set_ylim(10e-6, 10e-1)
 
     # Add subtitle with additional information about the data
     fig.text(
