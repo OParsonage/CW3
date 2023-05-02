@@ -49,7 +49,7 @@ def _main() -> None:
             changes = None
         to_file(args, solution, changes, grid_input)
     else:
-        grids = copy.deepcopy(profile_grids)
+        grids = copy.deepcopy(profile_grids)  # Create copy of profile_grids
         print("Running test script for coursework 1")
         print("====================================")
         for i, (grid, n_rows, n_cols) in enumerate(grids):
@@ -71,10 +71,10 @@ def _main() -> None:
                     )
                     sys.exit(1)
             print("\nOriginal Grid:")
-            for line in profile_grids[i][0]:
+            for line in profile_grids[i][0]:  # Print unsolved grid to terminal
                 print(line)
             print("\nSolution:")
-            for line in solution:
+            for line in solution:  # Print solved grid to terminal
                 print(line)
             if _check_solution(solution, n_rows, n_cols):
                 print("grid %d correct\n" % (i + 1))
@@ -82,14 +82,18 @@ def _main() -> None:
             else:
                 print("grid %d incorrect\n" % (i + 1))
             if args.explain:
-                explain(profile_grids[i][0], solution, True)
+                explain(
+                    profile_grids[i][0], solution, True
+                )  # Print steps to reach solved grid to terminal
         if args.profile:
-            repeats = 10
+            repeats = 10  # Number of repeats per solver per Sudoku grid
             profiling_results = [
                 profiling(grid, n_rows, n_cols, repeats, args.solver)
                 for _, (grid, n_rows, n_cols) in enumerate(profile_grids)
             ]
-            barplot(profiling_results, repeats)
+            barplot(
+                profiling_results, repeats
+            )  # Create and show a bar plot detailing profiling results
 
         print("====================================")
         print("Test script complete, Total points: %d" % points)
