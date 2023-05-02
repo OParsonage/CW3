@@ -17,8 +17,8 @@ class TooManyHintsError(Exception):
 
 
 @dataclass
-class ProfileResults:
-    """Class for storing parameters to plot profiling results"""
+class ProfileResult:
+    """Class for storing parameters to plot profiling results."""
 
     difficulty: int
     n_rows: int
@@ -27,6 +27,9 @@ class ProfileResults:
 
 
 def _getArgs() -> argparse.Namespace:
+    """
+    Create and parse arguments from main.py.
+    """
     parser = argparse.ArgumentParser(
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
@@ -69,10 +72,19 @@ def _getArgs() -> argparse.Namespace:
 
 def reader(
     data_file: str,
-) -> list[list[int]]:  # function to read the data from the csv file
-    with open(data_file) as data:
-        all_data = csv.reader(data)  # read the data
-        return list(all_data)  # return the data as a list
+) -> list[list[int]]:
+    """
+    Function to read grid input from a file in a CSV format.
+
+    Args:
+        data_file (str): Relative path to grid CSV input file
+
+    Returns
+        (list[list[int]]): Nested list containing the grid
+    """
+    with open(data_file) as data:  # Context manager to handle file
+        all_data = csv.reader(data)  # Read CSV grid
+        return list(all_data)  # Return the grid as a nested list
 
 
 def explain(
@@ -80,6 +92,17 @@ def explain(
     solved_grid: list[list[int]],
     to_terminal: bool,
 ) -> list[list[tuple[int, int]]]:
+    """
+    Function to determine the differences between the original and solved grids.
+
+    Args:
+        original_grid (list[list[int]]): Unsolved grid
+        solved_grid (list[list[int]]): Solved grid
+        to_terminal (bool): If True, print to terminal
+
+    Returns:
+        changes (list[list[tuple[int, int]]]): Nested list containing the changes between the original and solved grids at each point
+    """
     changes = [
         [
             (i, updated)
@@ -88,7 +111,7 @@ def explain(
         ]
         for index, row in enumerate(original_grid)
     ]
-    if to_terminal:  # False when --explain flag
+    if to_terminal:  # False when --explain flag is set
         for row_number, row in enumerate(changes):
             for element in row:
                 print(
@@ -103,6 +126,16 @@ def to_file(
     changes: list[list[tuple[int]]],
     original_grid: list[list[int]],
 ) -> None:
+    """
+    Writes output to file. If --explain flag is set, include this in output file.
+    If --hint N flag is set limit changes between original and solved grids to N.
+
+    Args:
+        args (argparse.Namespace): Parsed Arguments
+        solved_grid (list[list[int]]): Solved grid
+        changes (list[list[tuple[int, int]]]): Nested list containing the changes between the original and solved grids at each point
+        original_grid (list[list[int]]): Unsolved grid
+    """
     with open(args.file[1], "w") as output:
         writer = csv.writer(output)
         output.write("Original Grid:\n")
@@ -126,7 +159,17 @@ def hint(
     original_grid: list[list[int]],
     n_rows: int,
     n_cols: int,
-):
+) -> None:
+    """
+    When --hint N flag is set, show N changes between the input and solved grid. When --explain flag is set show the requisite steps to reach the grid with N changes.
+
+    Args:
+        hints (int): Number of hints to show
+        solved_grid (list[list[int]]): Solved grid
+        original_grid (list[list[int]]): Unsolved grid
+        n_rows (int): Number of rows
+        n_rows (int): Number of columns
+    """
     ranges = [range(0, n_rows * n_cols) for i in range(2)]
     perms = list(itertools.product(*ranges))
     valid_perms = [
@@ -146,7 +189,20 @@ def hint(
 
 def profiling(
     grid: list[list[int]], n_cols: int, n_rows: int, repeat: int, solver: str
-) -> ProfileResults:
+) -> ProfileResult:
+    """
+    Profile solver against grid argument. Runs solver against grid for the number of repeats specified in the 'repeat' argument.
+
+    Arguments:
+        grid (list[list[int]]): Unsolved grid
+        n_cols (int): Number of columns
+        n_rows (int): Number of rows
+        repeat (int): Number of repeats
+        solver (str): Solver to use
+
+    Returns:
+        ProfileResult: Dataclass containing profiling results for a single grid
+    """
     SETUP = """
 import copy
 grid_to_test = copy.deepcopy(grid)
@@ -171,10 +227,17 @@ solved_grid = solve(grid_to_test, n_rows, n_cols, solver)
         },
     )
 
-    return ProfileResults(difficulty, n_rows, n_cols, results)
+    return ProfileResult(difficulty, n_rows, n_cols, results)
 
 
-def barplot(results: list[ProfileResults], repeats: int) -> None:
+def barplot(results: list[ProfileResult], repeats: int) -> None:
+    """
+    Produce a barplot showing profiling results.
+
+    Args:
+        results (list[ProfileResult]): List of profiling result dataclasses
+        repeats (int): Number of repeats that profiling was run for
+    """
     plt.style.use("ggplot")
     fig, ax = plt.subplots(figsize=(10, 5))
     ax.set_title("Time taken to solve Sudoku puzzles")

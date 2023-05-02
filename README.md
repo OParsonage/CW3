@@ -4,6 +4,8 @@
 
 This repository contains a Sudoku solver written in Python. Two solving algorithms are included, `recursive` and `wavefront`.
 
+Note: Python 3.10+ required due to the use of PEP 604 union type hinting.
+
 ## Arguments
 
 | Parameter                 | Default       | Description   |
