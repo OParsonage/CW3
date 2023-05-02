@@ -167,8 +167,8 @@ def hint(
         hints (int): Number of hints to show
         solved_grid (list[list[int]]): Solved grid
         original_grid (list[list[int]]): Unsolved grid
-        n_rows (int): Number of rows
-        n_rows (int): Number of columns
+        n_rows (int): Number of rows in grid
+        n_cols (int): Number of columns in grid
     """
     ranges = [range(0, n_rows * n_cols) for i in range(2)]
     perms = list(itertools.product(*ranges))
@@ -195,8 +195,8 @@ def profiling(
 
     Arguments:
         grid (list[list[int]]): Unsolved grid
-        n_cols (int): Number of columns
-        n_rows (int): Number of rows
+        n_cols (int): Number of columns in grid
+        n_rows (int): Number of rows in grid
         repeat (int): Number of repeats
         solver (str): Solver to use
 
