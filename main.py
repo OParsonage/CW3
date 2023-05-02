@@ -4,6 +4,7 @@ import copy
 import sys
 from profile_grids import grids as profile_grids
 from solve_funcs import solve, _check_solution
+import matplotlib.pyplot as plt
 from arg import (
     _getArgs,
     TooManyHintsError,
@@ -87,13 +88,16 @@ def _main() -> None:
                 )  # Print steps to reach solved grid to terminal
         if args.profile:
             repeats = 10  # Number of repeats per solver per Sudoku grid
-            profiling_results = [
-                profiling(grid, n_rows, n_cols, repeats, args.solver)
-                for _, (grid, n_rows, n_cols) in enumerate(profile_grids)
-            ]
-            barplot(
-                profiling_results, repeats
-            )  # Create and show a bar plot detailing profiling results
+            solvers = ["recursive", "wavefront"]
+            for solver in solvers:
+                profiling_results = [
+                    profiling(grid, n_rows, n_cols, repeats, solver)
+                    for _, (grid, n_rows, n_cols) in enumerate(profile_grids)
+                ]
+                barplot(
+                    profiling_results, repeats, solver
+                )  # Create and show a bar plot detailing profiling results
+            plt.show()
 
         print("====================================")
         print("Test script complete, Total points: %d" % points)

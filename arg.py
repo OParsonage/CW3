@@ -80,7 +80,7 @@ def reader(
         data_file (str): Relative path to grid CSV input file
 
     Returns
-        (list[list[int]]): Nested list containing the grid
+        list[list[int]]: Nested list containing the grid
     """
     with open(data_file) as data:  # Context manager to handle file
         all_data = csv.reader(data)  # Read CSV grid
@@ -184,9 +184,6 @@ def hint(
     return grid_to_show
 
 
-# function to plot the results of the profiling as a bar chart
-
-
 def profiling(
     grid: list[list[int]], n_cols: int, n_rows: int, repeat: int, solver: str
 ) -> ProfileResult:
@@ -230,17 +227,20 @@ solved_grid = solve(grid_to_test, n_rows, n_cols, solver)
     return ProfileResult(difficulty, n_rows, n_cols, results)
 
 
-def barplot(results: list[ProfileResult], repeats: int) -> None:
+def barplot(results: list[ProfileResult], repeats: int, solver: str) -> None:
     """
-    Produce a barplot showing profiling results.
+    Produce a bar plot showing profiling results.
 
     Args:
         results (list[ProfileResult]): List of profiling result dataclasses
         repeats (int): Number of repeats that profiling was run for
+        solver (str): Solver used to produce profiling results
     """
     plt.style.use("ggplot")
     fig, ax = plt.subplots(figsize=(10, 5))
-    ax.set_title("Time taken to solve Sudoku puzzles")
+    ax.set_title(
+        f"Time taken to solve Sudoku puzzles for {solver.capitalize()} solver"
+    )
     ax.set_xlabel("Number of missing values")
     ax.set_ylabel("Time taken (s)")
     ax.set_xticks(range(0, 81, 5))
@@ -250,21 +250,20 @@ def barplot(results: list[ProfileResult], repeats: int) -> None:
     # Define color map for difficulty levels
     cmap = plt.get_cmap("rainbow")
 
-    # sorting the grids by difficulty
+    # Sorting the grids by difficulty
     results.sort(key=lambda x: x.difficulty)
 
     grid_number = 0
-    for grid in results:  # we plot the results for each grid
+    for grid in results:  # Calculate error bars and create a bar for each plot
         grid_number += 1
-        difficulty = grid.difficulty  # we get the difficulty of the grid
+        difficulty = grid.difficulty  # Difficulty of each grid
         average_time = np.mean(
             grid.timeit_results
-        )  # we calculate the average time taken to solve the grid
+        )  # Calculate average time to solve each grid
         std_dev = np.std(
             grid.timeit_results
-        )  # we calculate the standard deviation of the time taken to solve the grid
+        )  # Calculate standard deviation for time to solve each grid
 
-        # Adding error bars to bar plot
         ax.bar(
             difficulty,
             average_time,
@@ -285,7 +284,7 @@ def barplot(results: list[ProfileResult], repeats: int) -> None:
     fig.text(
         0.5,
         0.001,
-        f"Data based on 18 Sudoku puzzles solved {repeats} times each using a recursive algorithm",
+        f"Data based on {len(results)} Sudoku puzzles solved {repeats} times each using a recursive algorithm",
         ha="center",
         fontsize=12,
     )
@@ -298,14 +297,6 @@ def barplot(results: list[ProfileResult], repeats: int) -> None:
     # Extract the x and y values from the results
     x = np.array([grid.difficulty for grid in results])
     y = np.array([np.mean(grid.timeit_results) for grid in results])
-
-    # sorting x and y values by ascending y values
-    x = x[np.argsort(x)]
-    y = y[np.argsort(x)]
-
-    # sorting x and y values by ascending y values
-    x = x[np.argsort(x)]
-    y = y[np.argsort(x)]
 
     # Fit a logarithmic polynomial to the data
     z = np.polyfit(np.log(x), np.log(y), 1)
@@ -322,4 +313,3 @@ def barplot(results: list[ProfileResult], repeats: int) -> None:
     # Add legend
     plt.legend(bbox_to_anchor=(1.2, 1), loc="upper left")
     plt.tight_layout()
-    plt.show()  # we show the plot
