@@ -47,7 +47,7 @@ def _main() -> None:
             changes = explain(grid_input, solution, False)
         else:
             changes = None
-        to_file(args, solution, changes)
+        to_file(args, solution, changes, grid_input)
     else:
         grids = copy.deepcopy(original_grids)
         print("Running test script for coursework 1")

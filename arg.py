@@ -92,7 +92,7 @@ def explain(
         for row_number, row in enumerate(changes):
             for element in row:
                 print(
-                    f"Put {element[0]} in location ({row_number}, {element[1]})"
+                    f"Put {element[1]} in row {row_number+1}, column {element[0]+1}"
                 )
     return changes
 
@@ -101,10 +101,14 @@ def to_file(
     args: argparse.Namespace,
     solved_grid: list[list[int]],
     changes: list[list[tuple[int]]],
+    original_grid: list[list[int]],
 ) -> None:
     with open(args.file[1], "w") as output:
-        output.write("Solved Grid:\n")
         writer = csv.writer(output)
+        output.write("Original Grid:\n")
+        writer.writerows(original_grid)
+        output.write("\n")
+        output.write("Solved Grid:\n")
         writer.writerows(solved_grid)
     if args.explain:
         with open(args.file[1], "a") as output:
@@ -112,7 +116,7 @@ def to_file(
             for row_number, row in enumerate(changes):
                 for element in row:
                     output.write(
-                        f"Put {element[0]} in location ({row_number}, {element[1]})\n"
+                        f"Put {element[1]} in row {row_number+1}, column {element[0]+1}\n"
                     )
 
 
