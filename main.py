@@ -2,7 +2,7 @@ import time
 import csv
 import copy
 import sys
-from original_grids import grids as original_grids
+from profile_grids import grids as profile_grids
 from solve_funcs import solve, _check_solution
 from arg import (
     _getArgs,
@@ -49,7 +49,7 @@ def _main() -> None:
             changes = None
         to_file(args, solution, changes, grid_input)
     else:
-        grids = copy.deepcopy(original_grids)
+        grids = copy.deepcopy(profile_grids)
         print("Running test script for coursework 1")
         print("====================================")
         for i, (grid, n_rows, n_cols) in enumerate(grids):
@@ -63,7 +63,7 @@ def _main() -> None:
             if args.hint:
                 try:
                     solution = hint(
-                        int(args.hint), solution, *original_grids[i]
+                        int(args.hint), solution, *profile_grids[i]
                     )
                 except TooManyHintsError:
                     print(
@@ -71,7 +71,7 @@ def _main() -> None:
                     )
                     sys.exit(1)
             print("\nOriginal Grid:")
-            for line in original_grids[i][0]:
+            for line in profile_grids[i][0]:
                 print(line)
             print("\nSolution:")
             for line in solution:
@@ -82,12 +82,12 @@ def _main() -> None:
             else:
                 print("grid %d incorrect\n" % (i + 1))
             if args.explain:
-                explain(original_grids[i][0], solution, True)
+                explain(profile_grids[i][0], solution, True)
         if args.profile:
             repeats = 10
             profiling_results = [
                 profiling(grid, n_rows, n_cols, repeats, args.solver)
-                for _, (grid, n_rows, n_cols) in enumerate(original_grids)
+                for _, (grid, n_rows, n_cols) in enumerate(profile_grids)
             ]
             barplot(profiling_results, repeats)
 
