@@ -28,3 +28,5 @@ python main.py
 | --hint N                  |   False       | Limit output to updating N values when showing solution - works with --explain and --file flags|
 | --file INPUT OUTPUT       |   False       | Input a Sudoku grid from INPUT file and save output to OUTPUT file - works with --explain and --hint flags|
 | --profile                 |   False       | Profile both the `recursive` and `wavefront` solvers against the grids in `profile_grids.py`. If selected all other flags are ignored.|
+
+For use with the `--file` argument, Sudoku grids should be provided in the same format as shown in `example.csv`, where newlines delineate rows and commas delineate columns.
