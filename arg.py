@@ -68,23 +68,6 @@ def getArgs() -> argparse.Namespace:
     return args
 
 
-def reader(
-    data_file: str,
-) -> list[list[int]]:
-    """
-    Function to read grid input from a file in a CSV format.
-
-    Args:
-        data_file (str): Relative path to grid CSV input file
-
-    Returns
-        list[list[int]]: Nested list containing the grid
-    """
-    with open(data_file) as data:  # Context manager to handle file
-        all_data = csv.reader(data)  # Read CSV grid
-        return list(all_data)  # Return the grid as a nested list
-
-
 def explain(
     original_grid: list[list[int]],
     solved_grid: list[list[int]],
