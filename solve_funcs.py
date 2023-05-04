@@ -2,7 +2,7 @@ import copy
 import random
 
 
-def _check_section(section: list[int], n: int) -> bool:
+def check_section(section: list[int], n: int) -> bool:
     """
     Checks the validity of a section of Sudoku.
 
@@ -20,7 +20,7 @@ def _check_section(section: list[int], n: int) -> bool:
     return False
 
 
-def _get_squares(
+def get_squares(
     grid: list[list[int]], n_rows: int, n_cols: int
 ) -> list[list[int]]:
     """
@@ -47,7 +47,7 @@ def _get_squares(
     return squares
 
 
-def _check_solution(grid: list[list[int]], n_rows: int, n_cols: int) -> bool:
+def check_solution(grid: list[list[int]], n_rows: int, n_cols: int) -> bool:
     """
     Checks if a Sudoku grid has been correctly solved.
 
@@ -61,23 +61,23 @@ def _check_solution(grid: list[list[int]], n_rows: int, n_cols: int) -> bool:
     """
     n = n_rows * n_cols
     for row in grid:
-        if not _check_section(row, n):
+        if not check_section(row, n):
             return False
     for i in range(n_rows):
         column = [
             row[i] for row in grid
         ]  # Comprehension creates a list containing the values in a column
-        if not _check_section(column, n):
+        if not check_section(column, n):
             return False
-    squares = _get_squares(grid, n_rows, n_cols)
+    squares = get_squares(grid, n_rows, n_cols)
     for square in squares:
-        if not _check_section(square, n):
+        if not check_section(square, n):
             return False
     return True
 
 
 # we check if the number is valid in the row, column and box
-def _valid(
+def valid(
     grid: list[list[int]],
     row_index: int,
     column_index: int,
@@ -116,15 +116,18 @@ def _valid(
     grid_y = row_index // n_rows
 
     # Check each cell in the sub grid to see if the number is already present
-    for i in range(grid_y * n_rows, grid_y * n_rows + n_rows):
-        for j in range(grid_x * n_cols, grid_x * n_cols + n_cols):
-            if grid[i][j] == number and (i, j) != (row_index, column_index):
+    for row_number in range(grid_y * n_rows, grid_y * n_rows + n_rows):
+        for column_number in range(grid_x * n_cols, grid_x * n_cols + n_cols):
+            if grid[row_number][column_number] == number and (
+                row_number,
+                column_number,
+            ) != (row_index, column_index):
                 return False
 
     return True  # If the number is not in the row, column or box, it is valid
 
 
-def _priority_length(
+def priority_length(
     priority_array: tuple[list[list[list[int] | int]]],
 ) -> int:
     """
@@ -139,7 +142,7 @@ def _priority_length(
     return len(priority_array[2])
 
 
-def _create_priority(
+def create_priority(
     grid: list[list[int]],
     n_rows: int,
     n_cols: int,
@@ -167,7 +170,7 @@ def _create_priority(
                     [row, column, []]
                 )  # Append empty list containing the location of an unfilled value
                 for value in valid_array_old[row][column]:
-                    if _valid(
+                    if valid(
                         grid, row, column, value, n_rows, n_cols
                     ):  # Test if the value entered could be part of a valid solution
                         valid_array[row][column].append(
@@ -177,7 +180,7 @@ def _create_priority(
                             value
                         )  # Append value to end of corresponding list in priority_array
     priority_array.sort(
-        key=_priority_length
+        key=priority_length
     )  # Sort priority array in ascending order based on number of potential values for each grid location
     if (
         priority_array and type(priority_array[0][2]) == int
@@ -211,14 +214,14 @@ def recursive_solve(
         for value in priority_array[0][
             2
         ]:  # Try value from priority_array to corresponding grid location
-            if _valid(
+            if valid(
                 grid, row, column, value, n_rows, n_cols
             ):  # Check if value is valid for the current state of the grid
                 grid[row][column] = value  # Place value into grid
                 recursive_solve(
                     grid, n_rows, n_cols, priority_array[1:]
                 )  # Continue to next recursion level
-                if _check_solution(
+                if check_solution(
                     grid, n_rows, n_cols
                 ):  # Return grid if solution is complete
                     return grid
@@ -259,7 +262,7 @@ def wavefront_solve(
         if (
             len(priority_array_update[0][2]) == 1
         ):  # Check if only one potential value for corresponding location in grid
-            if _valid(
+            if valid(
                 grid_update,
                 priority_array_update[0][0],
                 priority_array_update[0][1],
@@ -281,7 +284,7 @@ def wavefront_solve(
             test_num = random.choice(
                 priority_array_update[0][2]
             )  # Randomly choose a potential number from those in priority_array for the corresponding location
-            if _valid(
+            if valid(
                 grid_update,
                 priority_array_update[0][0],
                 priority_array_update[0][1],
@@ -298,10 +301,10 @@ def wavefront_solve(
                 (
                     priority_array_update_2,
                     valid_array_update_2,
-                ) = _create_priority(
+                ) = create_priority(
                     grid_update_2, n_rows, n_cols, valid_array_update
                 )  # Update priority_array after inserting a random value
-                if _check_solution(
+                if check_solution(
                     grid_update_2, n_rows, n_cols
                 ):  # Check if current state of grid is valid
                     return grid_update_2, False
@@ -335,7 +338,7 @@ def wavefront_solve(
                 "grid_update" in locals() and grid_update
             ):  # If grid_update was created for this recursion level and is not False
                 grid_check = grid_update  # Set grid_check to grid_update from current recursion level
-            if _check_solution(
+            if check_solution(
                 grid_check, n_rows, n_cols
             ):  # Check if solution is valid
                 return grid_check, False  # Return solved grid
@@ -368,7 +371,7 @@ def solve(
         ]  # Creates a list of possible values for one grid location containing a '0' - otherwise the value at that grid location is used instead
         for row, _ in enumerate(grid)
     ]  # Creates a nested list containing all possible values for unfilled grid locations or a single value if that grid location was already filled
-    priority_array, valid_array = _create_priority(
+    priority_array, valid_array = create_priority(
         grid, n_rows, n_cols, valid_array_init
     )  # Creates initial priority_array based on initial valid_array
     if solver == "recursive":  # Execute the 'recursive' solver if selected

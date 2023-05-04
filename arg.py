@@ -26,7 +26,7 @@ class ProfileResult:
     timeit_results: list
 
 
-def _getArgs() -> argparse.Namespace:
+def getArgs() -> argparse.Namespace:
     """
     Create and parse arguments from main.py.
     """
@@ -105,17 +105,19 @@ def explain(
     """
     changes = [
         [
-            (i, updated)
-            for i, (zero, updated) in enumerate(zip(row, solved_grid[index]))
+            (column_index, updated)
+            for column_index, (zero, updated) in enumerate(
+                zip(row, solved_grid[index])
+            )
             if zero != updated
-        ]
+        ]  # Finds the differences between the solved and unsolved grids for a row
         for index, row in enumerate(original_grid)
-    ]
+    ]  # Repeats across all rows in a grid
     if to_terminal:  # False when --explain flag is set
-        for row_number, row in enumerate(changes):
+        for row_index, row in enumerate(changes):
             for element in row:
                 print(
-                    f"Put {element[1]} in row {row_number+1}, column {element[0]+1}"
+                    f"Put {element[1]} in row {row_index+1}, column {element[0]+1}"
                 )
     return changes
 
@@ -171,16 +173,24 @@ def hint(
         n_cols (int): Number of columns in grid
     """
     ranges = [range(0, n_rows * n_cols) for i in range(2)]
-    perms = list(itertools.product(*ranges))
+    perms = list(
+        itertools.product(*ranges)
+    )  # Creates list of all locations in grid
     valid_perms = [
         perm for perm in perms if original_grid[perm[0]][perm[1]] == 0
-    ]
-    if hints > sum(row.count(0) for row in original_grid):
+    ]  # Creates list of all locations where a zero was present in the unsolved grid
+    if hints > sum(
+        row.count(0) for row in original_grid
+    ):  # If the user asks for more hints than there are unfilled locations in a grid
         raise TooManyHintsError
-    chosen_hints = random.sample(valid_perms, hints)
+    chosen_hints = random.sample(
+        valid_perms, hints
+    )  # Randomly chooses hints to show
     grid_to_show = copy.deepcopy(original_grid)
     for perm in chosen_hints:
-        grid_to_show[perm[0]][perm[1]] = solved_grid[perm[0]][perm[1]]
+        grid_to_show[perm[0]][perm[1]] = solved_grid[perm[0]][
+            perm[1]
+        ]  # Updates grid with chosen hint values to their respective location
     return grid_to_show
 
 
@@ -222,7 +232,7 @@ solved_grid = solve(grid_to_test, n_rows, n_cols, solver)
             "solve": solve,
             "solver": solver,
         },
-    )
+    )  # Creates a list containing the time to solve each grid - repeated for the number of times specified in the 'repeat' argument
 
     return ProfileResult(difficulty, n_rows, n_cols, results)
 
@@ -278,7 +288,7 @@ def barplot(results: list[ProfileResult], repeats: int, solver: str) -> None:
 
     # Set y-axis to logarithmic scale
     ax.set_yscale("log")
-    ax.set_ylim(10e-6, 10e-1)
+    ax.set_ylim(10e-7, 10e-1)
 
     # Add subtitle with additional information about the data
     fig.text(
