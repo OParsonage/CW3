@@ -114,9 +114,7 @@ def valid(
     return True  # If the number is not in the row, column or box, it is valid
 
 
-def priority_length(
-    priority_array: tuple[list[list[list[int] | int]]],
-) -> int:
+def priority_length(priority_array: tuple[list[list[list[int] | int]]]) -> int:
     """
     Key function to be used when sorting the priority array for the number of potential values for a location.
 
