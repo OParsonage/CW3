@@ -3,6 +3,7 @@ import csv
 import copy
 import sys
 from profile_grids import grids as profile_grids
+from default_grids import grids as default_grids
 from solve_funcs import solve, check_solution
 import matplotlib.pyplot as plt
 from arg import (
@@ -46,7 +47,7 @@ def main() -> None:
             changes = None
         to_file(args, solution, changes, grid_input)
     else:
-        grids = copy.deepcopy(profile_grids)  # Create copy of profile_grids
+        grids = copy.deepcopy(default_grids)  # Create copy of default_grids
         print("Running test script for coursework 3")
         print("====================================")
         for grid_number, (grid, n_rows, n_cols) in enumerate(grids):  #
@@ -59,12 +60,12 @@ def main() -> None:
             print("Solved in: %f seconds" % elapsed_time)
             if args.hint:
                 try:
-                    solution = hint(int(args.hint), solution, *profile_grids[grid_number])
+                    solution = hint(int(args.hint), solution, *default_grids[grid_number])
                 except TooManyHintsError:
                     print(f"Error, number of hints requested is greater than the number of zeroes present in grid {grid_number+1}")
                     sys.exit(1)
             print("\nOriginal Grid:")
-            for line in profile_grids[grid_number][0]:  # Print unsolved grid to terminal
+            for line in default_grids[grid_number][0]:  # Print unsolved grid to terminal
                 print(line)
             print("\nSolution:")
             for line in solution:  # Print solved grid to terminal
@@ -75,12 +76,14 @@ def main() -> None:
             else:
                 print("grid %d incorrect\n" % (grid_number + 1))
             if args.explain:
-                explain(profile_grids[grid_number][0], solution, True)  # Print steps to reach solved grid to terminal
+                explain(default_grids[grid_number][0], solution, True)  # Print steps to reach solved grid to terminal
         if args.profile:
             repeats = 10  # Number of repeats per solver per Sudoku grid
             solvers = ["recursive", "wavefront"]  # Sudoku solvers implemented
             for solver in solvers:
-                profiling_results = [profiling(grid, n_rows, n_cols, repeats, solver) for _, (grid, n_rows, n_cols) in enumerate(profile_grids)]
+                profiling_results = [
+                    profiling(grid, n_rows, n_cols, repeats, solver) for _, (grid, n_rows, n_cols) in enumerate(profile_grids)
+                ]  # Creates profiling results for all profile_grids
                 barplot(profiling_results, repeats, solver)  # Create and show a bar plot detailing profiling results
             plt.show()  # Show profiling plots
         print("====================================")

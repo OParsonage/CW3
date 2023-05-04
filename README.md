@@ -16,7 +16,7 @@ A Python environment with the following dependencies is required:
 ## Example Usage
 
 ```bash
-python main.py
+python main.py ARGUMENTS
 ```
 
 ## Arguments
@@ -29,4 +29,14 @@ python main.py
 | --file INPUT OUTPUT       |   False       | Input a Sudoku grid from INPUT file and save output to OUTPUT file - works with --explain and --hint flags|
 | --profile                 |   False       | Profile both the `recursive` and `wavefront` solvers against the grids in `profile_grids.py`. If selected all other flags are ignored.|
 
-For use with the `--file` argument, Sudoku grids should be provided in the same format as shown in `example.csv`, where newlines delineate rows and commas delineate columns.
+### Example Argument Usage
+
+```bash
+python main.py --file example.csv output.txt --hint 5 --explain --solver wavefront
+```
+
+## Testing other Sudoku grids
+
+When testing individual Sudoku grids from a CSV file, the `--file` argument should be used. Sudoku grids should be provided in the same format as shown in `example.csv`, where newlines delineate rows and commas delineate columns.
+
+To test multiple Sudoku grids at once for Tasks 1 and 3, `default_grids.py` can be updated with additional grids in a nested list format. The `--solver` flag can be used to select either the `recursive` or `wavefront` solver. Each list should contain a row of values. Subsequently, the `grids` variable should be updated with the variable containing a tuple where the first element is the variable containing the nested list for the grid, and the second and third elements are the dimension of the Sudoku grid. 
