@@ -21,13 +21,9 @@ def main() -> None:
     args = getArgs()
     if args.file:
         dims = {"4": (2, 2), "6": (2, 3), "9": (3, 3)}
-        with open(
-            args.file[0], "r", newline=""
-        ) as gridfile:  # Context manager to open CSV file containing grid
+        with open(args.file[0], "r", newline="") as gridfile:  # Context manager to open CSV file containing grid
             reader = csv.reader(gridfile)
-            grid_input = [
-                [int(value) for value in lst] for lst in list(reader)
-            ]
+            grid_input = [[int(value) for value in lst] for lst in list(reader)]
             solution = solve(
                 copy.deepcopy(grid_input),
                 *dims[str(len(grid_input))],
@@ -41,12 +37,8 @@ def main() -> None:
                     grid_input,
                     *dims[str(len(grid_input))],
                 )
-            except (
-                TooManyHintsError
-            ):  # Print error message and exit gracefully
-                print(
-                    "Error, number of hints requested is greater than the number of zeroes present in grid"
-                )
+            except TooManyHintsError:  # Print error message and exit gracefully
+                print("Error, number of hints requested is greater than the number of zeroes present in grid")
                 sys.exit(1)
         if args.explain:
             changes = explain(grid_input, solution, False)
@@ -67,18 +59,12 @@ def main() -> None:
             print("Solved in: %f seconds" % elapsed_time)
             if args.hint:
                 try:
-                    solution = hint(
-                        int(args.hint), solution, *profile_grids[grid_number]
-                    )
+                    solution = hint(int(args.hint), solution, *profile_grids[grid_number])
                 except TooManyHintsError:
-                    print(
-                        f"Error, number of hints requested is greater than the number of zeroes present in grid {grid_number+1}"
-                    )
+                    print(f"Error, number of hints requested is greater than the number of zeroes present in grid {grid_number+1}")
                     sys.exit(1)
             print("\nOriginal Grid:")
-            for line in profile_grids[grid_number][
-                0
-            ]:  # Print unsolved grid to terminal
+            for line in profile_grids[grid_number][0]:  # Print unsolved grid to terminal
                 print(line)
             print("\nSolution:")
             for line in solution:  # Print solved grid to terminal
@@ -89,20 +75,13 @@ def main() -> None:
             else:
                 print("grid %d incorrect\n" % (grid_number + 1))
             if args.explain:
-                explain(
-                    profile_grids[grid_number][0], solution, True
-                )  # Print steps to reach solved grid to terminal
+                explain(profile_grids[grid_number][0], solution, True)  # Print steps to reach solved grid to terminal
         if args.profile:
             repeats = 10  # Number of repeats per solver per Sudoku grid
             solvers = ["recursive", "wavefront"]  # Sudoku solvers implemented
             for solver in solvers:
-                profiling_results = [
-                    profiling(grid, n_rows, n_cols, repeats, solver)
-                    for _, (grid, n_rows, n_cols) in enumerate(profile_grids)
-                ]
-                barplot(
-                    profiling_results, repeats, solver
-                )  # Create and show a bar plot detailing profiling results
+                profiling_results = [profiling(grid, n_rows, n_cols, repeats, solver) for _, (grid, n_rows, n_cols) in enumerate(profile_grids)]
+                barplot(profiling_results, repeats, solver)  # Create and show a bar plot detailing profiling results
             plt.show()  # Show profiling plots
         print("====================================")
         print("Test script complete, Total points: %d" % points)
