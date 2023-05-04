@@ -222,10 +222,11 @@ def wavefront_solve(
     grid_update = copy.deepcopy(grid)  # Create a copy of the input grid
     priority_array_update = copy.deepcopy(priority_array)  # Create a copy of priority_array
     valid_array_update = copy.deepcopy(valid_array)  # Create a copy of valid_array
+    grid_update_2 = None
     while priority_array_update:  # Repeat until priority_array_update is empty
         if len(priority_array_update[0][2]) == 1:  # Check if only one potential value for corresponding location in grid
             # Check if single value is valid for corresponding grid location
-            if valid(grid_update, priority_array_update[0][0], priority_array_update[0][1], test_num, n_rows, n_cols):
+            if valid(grid_update, priority_array_update[0][0], priority_array_update[0][1], priority_array_update[0][2][0], n_rows, n_cols):
                 grid_update[priority_array_update[0][0]][priority_array_update[0][1]] = priority_array_update[0][2][0]  # Update value in grid
                 priority_array_update = priority_array_update[1:]  # Remove first element in priority_array_update
             else:
@@ -252,14 +253,14 @@ def wavefront_solve(
                     priority_array_update[0][2].remove(test_num)  # Remove invalid value from current recursion level
             else:
                 priority_array_update[0][2].remove(test_num)  # Remove invalid value from current recursion level
-            if "grid_update_2" in locals() and grid_update_2:  # If grid_update_2 was created for this recursion level and is not False
+            if grid_update_2 is not None and grid_update_2:  # If grid_update_2 was created for this recursion level and is not False
                 grid_check = grid_update_2  # Set grid_check to grid_update_2 from current recursion level
-            elif "grid_update" in locals() and grid_update:  # If grid_update was created for this recursion level and is not False
+            elif grid_update:  # If grid_update was created for this recursion level and is not False
                 grid_check = grid_update  # Set grid_check to grid_update from current recursion level
             if check_solution(grid_check, n_rows, n_cols):  # Check if solution is valid
                 return grid_check, False  # Return solved grid
     # Return updated grid and priority array to previous recursion level
-    return (grid_update, priority_array)
+    return grid_update, priority_array
 
 
 def solve(grid: list[list[int]], n_rows: int, n_cols: int, solver: str) -> list[list[int]]:
